@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { MD2DarkTheme, MD2LightTheme, PaperProvider } from 'react-native-paper';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { AlertNotificationRoot } from 'react-native-alert-notification';
 
 const darkTheme = {
   ...MD2DarkTheme,
@@ -45,12 +46,14 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={false ? darkTheme : lightTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="register" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <AlertNotificationRoot>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="register" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </AlertNotificationRoot>
     </PaperProvider>
   );
 }
