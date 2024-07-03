@@ -1,51 +1,68 @@
-import { Image, StyleSheet, Platform, View, TouchableOpacity, Button } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
+import { StyleSheet, Image } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { useNavigation, useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { i18n } from '@/locales/locales'
+import { TextInput, Button, Text, useTheme, Surface } from 'react-native-paper';
 
 export default function Login() {
     const navigation = useNavigation();
     const router = useRouter();
+    const theme = useTheme();
+    const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         navigation.setOptions({
-            
+
         });
     }, [navigation]);
 
     return (
-        <ThemedView style={styles.titleContainer}>
-            <Button title="login" onPress={()=>{
-                if(router.canDismiss()){
-                    router.dismissAll()
-                }
-                
-            }}></Button>
-        </ThemedView>
+        <Surface style={styles.loginContainer}>
+            <Image
+                source={require('@/assets/images/react-logo.png')}
+                style={styles.logo}
+            />
+            <TextInput style={styles.input} label={i18n.t('login.usernameOrEmail')} />
+            <TextInput
+                style={styles.input}
+                label={i18n.t('login.password')}
+                secureTextEntry={!showPassword}
+                right={<TextInput.Icon onPress={()=>setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
+            />
+            <Button style={styles.loginButton} mode="outlined">{i18n.t("login.login")}</Button>
+            <Text style={{...styles.orText, color: theme.colors.onSurface}} variant="bodyMedium">
+                {i18n.t("login.dontYouHaveAnAccount")}
+                <Text onPress={() => router.navigate('register')} style={{
+                    color: theme.colors.primary,
+                }}>
+                    {'  '}{i18n.t("login.register")}
+                </Text>
+            </Text>
+        </Surface>
     );
 }
 
 const styles = StyleSheet.create({
-    titleContainer: {
-        flexDirection: 'row',
+    loginContainer: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        alignContent: 'center',
-        gap: 8,
-        height: 400,
     },
-    stepContainer: {
-        gap: 8,
-        marginBottom: 8,
+    input: {
+        width: '80%',
+        marginBottom: 10,
     },
-    reactLogo: {
-        height: 178,
-        width: 290,
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
+    loginButton: {
+        borderRadius: 3,
+        width: '80%',
     },
+    orText: {
+        marginTop: 8
+    },
+    logo: {
+        width: "50%",
+        resizeMode: "contain",
+        marginBottom: 30
+    }
 });
