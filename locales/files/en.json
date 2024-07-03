@@ -14,5 +14,10 @@
         "password": "Password",
         "doYouHaveAnAccount": "Do you have an account?",
         "login": "Login"
+    },
+    "error": {
+        "auth":{
+            "userOrPasswordInvalid": "Invalid username or password!"
+        }
     }
 }

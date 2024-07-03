@@ -14,5 +14,10 @@
         "password": "Şifre",
         "doYouHaveAnAccount": "Hesabın var mı?",
         "login": "Giriş Yap"
+    },
+    "error": {
+        "auth":{
+            "userOrPasswordInvalid": "Geçersiz kullanıcı adı veya şifre!"
+        }
     }
 }
