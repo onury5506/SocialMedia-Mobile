@@ -1,8 +1,18 @@
 {
     "login": {
-        "login": "Login"
-    },
-    "register" : {
+        "login": "Login",
+        "usernameOrEmail": "Username or Email",
+        "password": "Password",
+        "dontYouHaveAnAccount": "Don't you have an account?",
         "register": "Register"
+    },
+    "register": {
+        "register": "Register",
+        "fullname": "Full Name",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "doYouHaveAnAccount": "Do you have an account?",
+        "login": "Login"
     }
 }

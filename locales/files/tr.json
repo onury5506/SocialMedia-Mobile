@@ -1,8 +1,18 @@
 {
     "login": {
-        "login": "Giriş Yap"
-    },
-    "register" : {
+        "login": "Giriş Yap",
+        "usernameOrEmail": "Kullanıcı adı veya E-posta",
+        "password": "Şifre",
+        "dontYouHaveAnAccount": "Hesabın yok mu?",
         "register": "Kayıt Ol"
+    },
+    "register": {
+        "register": "Kayıt Ol",
+        "fullname": "Ad ve Soyadınız",
+        "username": "Kullanıcı Adı",
+        "email": "E-posta",
+        "password": "Şifre",
+        "doYouHaveAnAccount": "Hesabın var mı?",
+        "login": "Giriş Yap"
     }
 }
