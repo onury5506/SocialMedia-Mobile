@@ -10,8 +10,6 @@ export const i18n = new I18n({
 
 const deviceLanguage = getLocales()[0].languageCode ?? 'en';
 
-console.log(getLocales())
-
 if (!i18n.translations[deviceLanguage]) {
     i18n.locale = 'en';
 }else{
