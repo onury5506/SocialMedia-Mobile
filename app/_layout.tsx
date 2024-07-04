@@ -42,10 +42,8 @@ export default function RootLayout() {
     return null;
   }
 
-  console.log(darkTheme.colors.surface, lightTheme.colors.surface)
-
   return (
-    <PaperProvider theme={false ? darkTheme : lightTheme}>
+    <PaperProvider theme={colorScheme=="dark" ? darkTheme : lightTheme}>
       <AlertNotificationRoot>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
