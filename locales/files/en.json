@@ -3,7 +3,7 @@
         "login": "Login",
         "usernameOrEmail": "Username or Email",
         "password": "Password",
-        "dontYouHaveAnAccount": "Don't you have an account?",
+        "dontYouHaveAnAccount": "Don't have an account?",
         "register": "Register"
     },
     "register": {
@@ -12,12 +12,28 @@
         "username": "Username",
         "email": "Email",
         "password": "Password",
-        "doYouHaveAnAccount": "Do you have an account?",
+        "doYouHaveAnAccount": "Already have an account?",
         "login": "Login"
     },
     "error": {
-        "auth":{
+        "auth": {
             "userOrPasswordInvalid": "Invalid username or password!"
+        },
+        "register": {
+            "usernameMinlength": "Username must be at least 4 characters long.",
+            "usernameMaxlength": "Username must be at most 20 characters long.",
+            "usernameEmpty": "Username cannot be empty.",
+            "usernameAlreadyExists": "This username is already taken.",
+            "nameMinlength": "Full name must be at least 4 characters long.",
+            "nameMaxlength": "Full name must be at most 50 characters long.",
+            "nameEmpty": "Full name cannot be empty.",
+            "emailEmpty": "Email cannot be empty.",
+            "emailInvalid": "Invalid email address.",
+            "emailMaxlength": "Email must be at most 50 characters long.",
+            "emailAlreadyExists": "This email address is already in use.",
+            "passwordEmpty": "Password cannot be empty.",
+            "passwordWeak": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
+            "passwordMaxlength": "Password must be at most 20 characters long."
         }
     }
 }

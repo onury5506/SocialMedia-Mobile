@@ -18,6 +18,22 @@
     "error": {
         "auth":{
             "userOrPasswordInvalid": "Geçersiz kullanıcı adı veya şifre!"
+        },
+        "register": {
+            "usernameMinlength": "Kullanıcı adı en az 4 karakter olmalıdır.",
+            "usernameMaxlength": "Kullanıcı adı en fazla 20 karakter olmalıdır.",
+            "usernameEmpty": "Kullanıcı adı boş olamaz.",
+            "usernameAlreadyExists": "Bu kullanıcı adı zaten kullanımda.",
+            "nameMinlength": "Ad ve soyad en az 4 karakter olmalıdır.",
+            "nameMaxlength": "Ad ve soyad en fazla 50 karakter olmalıdır.",
+            "nameEmpty": "Ad ve soyad boş olamaz.",
+            "emailEmpty": "E-posta boş olamaz.",
+            "emailInvalid": "Geçersiz e-posta adresi.",
+            "emailMaxlength": "E-posta en fazla 50 karakter olmalıdır.",
+            "emailAlreadyExists": "Bu e-posta adresi zaten kullanımda.",
+            "passwordEmpty": "Şifre boş olamaz.",
+            "passwordWeak": "Şifre en az 8 karakter olmalıdır ve en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.",
+            "passwordMaxlength": "Şifre en fazla 20 karakter olmalıdır."
         }
     }
 }
