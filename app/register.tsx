@@ -4,18 +4,40 @@ import { useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { i18n } from '@/locales/locales'
 import { TextInput, Button, Text, useTheme, Surface } from 'react-native-paper';
+import { Controller, useForm } from 'react-hook-form';
+import { register } from '@/api/user.api';
+import { RegisterUserDTOLanguageEnum } from '@/api/models';
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 
 export default function Register() {
-    const navigation = useNavigation();
+    const { control, handleSubmit, formState: { errors } } = useForm()
     const router = useRouter();
     const theme = useTheme();
     const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        navigation.setOptions({
-
-        });
-    }, [navigation]);
+    function onRegister(data: any) {
+        setLoading(true)
+        register({
+            email: data.email,
+            name: data.fullname,
+            password: data.password,
+            username: data.username,
+            language: RegisterUserDTOLanguageEnum.En
+        }).then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+            let errorMessage = typeof err?.message === "string" ? i18n.t(err?.message) :  i18n.t(err?.message?.[0])
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                textBody: errorMessage,
+                autoClose: true,
+            })
+        }).finally(() => {
+            setLoading(false)
+        })
+    }
 
     return (
         <Surface style={styles.loginContainer}>
@@ -23,17 +45,50 @@ export default function Register() {
                 source={require('@/assets/images/react-logo.png')}
                 style={styles.logo}
             />
-            <TextInput style={styles.input} label={i18n.t('register.fullname')} />
-            <TextInput style={styles.input} label={i18n.t('register.username')} />
-            <TextInput style={styles.input} label={i18n.t('register.email')} />
-            <TextInput
-                style={styles.input}
-                label={i18n.t('login.password')}
-                secureTextEntry={!showPassword}
-                right={<TextInput.Icon onPress={()=>setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
+            <Controller
+                control={control}
+                name="fullname"
+                render={({ field: { onChange, value } }) => {
+                    return (
+                        <TextInput value={value} onChangeText={onChange} style={styles.input} label={i18n.t('register.fullname')} />
+                    )
+                }}
             />
-            <Button style={styles.loginButton} mode="outlined">{i18n.t("register.register")}</Button>
-            <Text style={{...styles.orText, color: theme.colors.onSurface}} variant="bodyMedium">
+            <Controller
+                control={control}
+                name="username"
+                render={({ field: { onChange, value } }) => {
+                    return (
+                        <TextInput value={value} onChangeText={onChange} style={styles.input} label={i18n.t('register.username')} />
+                    )
+                }}
+            />
+            <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => {
+                    return (
+                        <TextInput value={value} onChangeText={onChange} style={styles.input} label={i18n.t('register.email')} />
+                    )
+                }}
+            />
+            <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, value } }) => {
+                    return (
+                        <TextInput
+                            value={value} onChangeText={onChange}
+                            style={styles.input}
+                            label={i18n.t('login.password')}
+                            secureTextEntry={!showPassword}
+                            right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
+                        />
+                    )
+                }}
+            />
+            <Button onPress={handleSubmit(onRegister)} style={styles.loginButton} mode="outlined" loading={loading} disabled={loading}>{i18n.t("register.register")}</Button>
+            <Text style={{ ...styles.orText, color: theme.colors.onSurface }} variant="bodyMedium">
                 {i18n.t("register.doYouHaveAnAccount")}
                 <Text onPress={() => router.navigate('/')} style={{
                     color: theme.colors.primary,
