@@ -44,11 +44,13 @@ export default function RootLayout() {
     return null;
   }
 
+  const theme = colorScheme == 'dark' ? darkTheme : lightTheme;
+
   return (
     <Provider store={store}>
-      <PaperProvider theme={colorScheme == "dark" ? darkTheme : lightTheme}>
+      <PaperProvider theme={theme}>
         <SafeAreaProvider>
-          <SafeAreaView style={{flex: 1}}>
+          <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.surface}}>
             <AlertNotificationRoot>
               <Stack>
                 <Stack.Screen name="index" options={{ headerShown: false }} />
