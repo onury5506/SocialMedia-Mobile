@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RegisterResponseDTO, RegisterUserDTO, User, UserProfileDTO } from "./models";
+import { RegisterResponseDTO, RegisterUserDTO, UserProfileDTO } from "./models";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
 import store from "@/store/store";
@@ -18,15 +18,7 @@ export function register(registerDto: RegisterUserDTO): Promise<RegisterResponse
 
 export function me(): Promise<UserProfileDTO>{
     return api.get(`${baseUrl}/me`).then((res)=>{
-        store.dispatch(setProfile({
-            name: res.data.name,
-            username: res.data.username,
-            followers: res.data.followers,
-            following: res.data.following,
-            posts: res.data.posts,
-            bio: res.data.bio,
-            profilePicture: res.data.profilePicture
-        }))
+        store.dispatch(setProfile(res.data))
         return res.data
     }).catch(err=>{
         throw err?.response?.data

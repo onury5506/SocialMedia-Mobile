@@ -1,30 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store/store'
-import { TranslateResultDto } from '@/api/models';
-
-export interface UserProfile {
-    name: string;
-    username: string;
-    followers: number;
-    following: number;
-    posts: number;
-    bio: TranslateResultDto;
-    profilePicture: string;
-}
-
-export interface Auth {
-    accessToken: string;
-    refreshToken: string;
-}
+import { LoginResponseDto, UserProfileDTO } from '@/api/models';
 
 interface UserState {
-    profile: UserProfile | null,
-    auth: Auth | null
+    profile?: UserProfileDTO,
+    auth?: LoginResponseDto
 }
 
 const initialState: UserState = {
-    profile: null,
-    auth: null
+    profile: undefined,
+    auth: undefined
 }
 
 export const userSlice = createSlice({
@@ -38,8 +23,8 @@ export const userSlice = createSlice({
             state.auth = action.payload
         },
         clear: (state) => {
-            state.profile = null
-            state.auth = null
+            state.profile = undefined
+            state.auth = undefined
         }
     }
 })
