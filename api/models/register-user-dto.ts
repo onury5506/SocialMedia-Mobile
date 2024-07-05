@@ -66,13 +66,6 @@ export interface RegisterUserDTO {
     language: RegisterUserDTOLanguageEnum;
 }
 
-export interface RegisterResponseDTO{
-    id: string;
-    username: string;
-    name: string;
-    email: string;
-}
-
 /**
  * @export
  * @enum {string}
