@@ -6,6 +6,7 @@ import { TextInput, Button, Text, useTheme, Surface } from 'react-native-paper';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import api from '@/api/api';
+import { me } from '@/api/user.api';
 
 interface loginFormData {
     username: string;
@@ -23,7 +24,11 @@ export default function Login() {
         api.auth.login({
             username: data.username,
             password: data.password
-        }).then(console.log).catch((err) => {
+        }).then(() => {
+            return me()
+        }).then(()=>{
+            router.navigate('(tabs)')
+        }).catch((err) => {
             Toast.show({
                 type: ALERT_TYPE.DANGER,
                 textBody: i18n.t(err?.message),
