@@ -4,31 +4,53 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Avatar, Surface, useTheme } from 'react-native-paper';
+import { selectProfile } from '@/slices/userSlice';
+import { useSelector } from 'react-redux';
+import { View } from 'react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
+  const profile = useSelector(selectProfile);
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+        },
+        tabBarLabel: () => null,
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: 'Explore',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            (profile && profile.profilePicture) ? (
+              <View style={{
+                borderWidth: 1.5,
+                borderColor: focused ? theme.colors.primary : theme.colors.surface,
+                borderRadius: 100,
+              }}>
+                <Avatar.Image size={24} source={{uri:profile.profilePicture}} />
+              </View>
+              
+            ) : (
+              <Avatar.Icon size={28} icon="account" style={{
+                borderWidth: 1,
+                backgroundColor: focused ? theme.colors.primary : theme.colors.surface,
+              }}/>
+            )
           ),
         }}
       />
