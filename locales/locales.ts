@@ -8,7 +8,7 @@ export const i18n = new I18n({
     tr: turkish,
 });
 
-const deviceLanguage = getLocales()[0].languageCode ?? 'en';
+const deviceLanguage = getLocales()?.[0]?.languageCode ?? 'en';
 
 if (!i18n.translations[deviceLanguage]) {
     i18n.locale = 'en';
