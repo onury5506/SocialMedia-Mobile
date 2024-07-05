@@ -35,5 +35,11 @@
             "passwordWeak": "Şifre en az 8 karakter olmalıdır ve en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.",
             "passwordMaxlength": "Şifre en fazla 20 karakter olmalıdır."
         }
+    },
+    "profile":{
+        "posts": "Gönderi",
+        "followers": "Takipçi",
+        "following": "Takip",
+        "editProfile": "Profili Düzenle"
     }
 }

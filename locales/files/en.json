@@ -35,5 +35,10 @@
             "passwordWeak": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
             "passwordMaxlength": "Password must be at most 20 characters long."
         }
+    },
+    "profile":{
+        "posts": "Posts",
+        "followers": "Followers",
+        "following": "Following"
     }
 }
