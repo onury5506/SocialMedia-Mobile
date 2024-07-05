@@ -15,7 +15,6 @@ interface loginFormData {
 
 export default function Login() {
     const { control, handleSubmit, formState: { errors } } = useForm()
-    const navigation = useNavigation();
     const router = useRouter();
     const theme = useTheme();
     const [showPassword, setShowPassword] = useState(false)
