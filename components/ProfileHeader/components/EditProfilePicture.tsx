@@ -7,7 +7,6 @@ import { useState } from "react";
 import { deleteProfilePicture, updateProfilePicture } from "@/api/user.api";
 import { Toast, ALERT_TYPE } from "react-native-alert-notification";
 import * as ImagePicker from 'expo-image-picker';
-import { set } from "react-hook-form";
 
 export interface EditProfilePictureProps {
     visible: boolean;
