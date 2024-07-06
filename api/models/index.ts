@@ -8,6 +8,7 @@ export * from './create-post-request-dto';
 export * from './create-post-response-dto';
 export * from './follow-user-dto';
 export * from './hashtag-dto';
+export * from './inline-response200';
 export * from './is-blocked-dto';
 export * from './is-followed-dto';
 export * from './login-dto';
