@@ -58,5 +58,7 @@
         "editProfilePicture": "Yeni Profil Fotoğrafı Ekle",
         "removeProfilePicture": "Profil Fotoğrafını Kaldır"
     },
-    "somethingWentWrong":"Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
+    "somethingWentWrong":"Bir şeyler yanlış gitti. Lütfen tekrar deneyin.",
+    "follow": "Takip Et",
+    "unfollow": "Takibi Bırak"
 }

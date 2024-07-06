@@ -58,5 +58,7 @@
         "editProfilePicture": "Add New Profile Picture",
         "removeProfilePicture": "Remove Profile Picture"
     },
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
 }
