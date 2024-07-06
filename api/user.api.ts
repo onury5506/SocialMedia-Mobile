@@ -1,9 +1,10 @@
 import axios from "axios";
-import { RegisterResponseDTO, RegisterUserDTO, UpdateUserDTO, UpdateUserProfilePictureDTO, UserProfileDTO } from "./models";
+import { FollowUserDTO, MiniUserProfile, RegisterResponseDTO, RegisterUserDTO, UpdateUserDTO, UpdateUserProfilePictureDTO, UserProfileDTO } from "./models";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
 import store from "@/store/store";
 import { setProfile } from "@/slices/userSlice";
+import { PaginatedDto } from "./paginated.dto";
 
 const baseUrl = `${generalBaseUrl}/user`
 
@@ -66,6 +67,44 @@ export function deleteProfilePicture(){
     return api.delete(`${baseUrl}/me/profilePicture`).then(() => {
         return me()
     }).then(() => {
+        return;
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function getFollowers(userId: string, page: number): Promise<PaginatedDto<MiniUserProfile>> {
+    return api.get(`${baseUrl}/followers/${userId}/${page}`).then((res) => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function getFollowings(userId: string, page: number): Promise<PaginatedDto<MiniUserProfile>> {
+    return api.get(`${baseUrl}/followings/${userId}/${page}`).then((res) => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function follow(userId: string): Promise<void> {
+    const data: FollowUserDTO = {
+        id: userId
+    }
+    return api.post(`${baseUrl}/follow`, data).then(() => {
+        return;
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function unfollow(userId: string): Promise<void> {
+    const data: FollowUserDTO = {
+        id: userId
+    }
+    return api.post(`${baseUrl}/unfollow`, data).then(() => {
         return;
     }).catch(err => {
         throw err?.response?.data
