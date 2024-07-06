@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { MD2DarkTheme, MD2LightTheme, PaperProvider } from 'react-native-paper';
+import { MD2DarkTheme, MD2LightTheme, PaperProvider, Portal } from 'react-native-paper';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { Provider } from 'react-redux';
@@ -50,14 +50,16 @@ export default function RootLayout() {
     <Provider store={store}>
       <PaperProvider theme={theme}>
         <SafeAreaProvider>
-          <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.surface}}>
+          <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
             <AlertNotificationRoot>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="register" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
+              <Portal.Host>
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen name="register" options={{ headerShown: false }} />
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </Portal.Host>
             </AlertNotificationRoot>
           </SafeAreaView>
         </SafeAreaProvider>
