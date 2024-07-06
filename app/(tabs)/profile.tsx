@@ -1,30 +1,29 @@
+import { UserProfileDTO } from '@/api/models/user-profile-dto';
+import ProfileHeader from '@/components/ProfileHeader/ProfileHeader';
+import { selectProfile } from '@/slices/userSlice';
+import { router } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
-import { Surface, Text } from 'react-native-paper';
+import { Surface } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
-export default function HomeScreen() {
+export default function ProfileScreen() {
+  const user = useSelector(selectProfile)
+
+  if (user === undefined) {
+    return <Surface style={styles.container} children={null} />
+  }
+
   return (
-    <Surface>
-      <Text>Profile</Text>
+    <Surface style={styles.container} >
+      <ProfileHeader profile={user} />
     </Surface>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    flex: 1,
+  }
 });
