@@ -30,6 +30,7 @@
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.6",
+    "expo-video-thumbnails": "~8.0.0",
     "expo-web-browser": "~13.0.3",
     "i18n-js": "^4.4.3",
     "react": "18.2.0",
@@ -44,7 +45,7 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
-    "expo-video-thumbnails": "~8.0.0"
+    "expo-av": "~14.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
