@@ -34,6 +34,10 @@
             "passwordEmpty": "Password cannot be empty.",
             "passwordWeak": "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, and one number.",
             "passwordMaxlength": "Password must be at most 20 characters."
+        },
+        "newPost": {
+            "someThingWentWrongWhileUploading": "An error occurred while uploading the file. Please try again.",
+            "someThingWentWrongWhileProcessing": "An error occurred while processing the file. Please try again."
         }
     },
     "profile": {
@@ -57,6 +61,13 @@
         "about": "About",
         "editProfilePicture": "Add New Profile Picture",
         "removeProfilePicture": "Remove Profile Picture"
+    },
+    "newPost": {
+        "newPost": "New Post",
+        "share": "Share",
+        "PickAnImage": "Pick a file.",
+        "writeSomething": "Write something...",
+        "postShared": "Post shared."
     },
     "somethingWentWrong": "Something went wrong. Please try again.",
     "follow": "Follow",

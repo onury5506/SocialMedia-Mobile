@@ -16,7 +16,7 @@
         "login": "Giriş Yap"
     },
     "error": {
-        "auth":{
+        "auth": {
             "userOrPasswordInvalid": "Geçersiz kullanıcı adı veya şifre!"
         },
         "register": {
@@ -34,9 +34,13 @@
             "passwordEmpty": "Şifre boş olamaz.",
             "passwordWeak": "Şifre en az 8 karakter olmalıdır ve en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.",
             "passwordMaxlength": "Şifre en fazla 20 karakter olmalıdır."
+        },
+        "newPost": {
+            "someThingWentWrongWhileUploading": "Dosya yüklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+            "someThingWentWrongWhileProcessing": "Dosya işlenirken bir hata oluştu. Lütfen tekrar deneyin."
         }
     },
-    "profile":{
+    "profile": {
         "posts": "Gönderi",
         "followers": "Takipçi",
         "following": "Takip",
@@ -58,7 +62,14 @@
         "editProfilePicture": "Yeni Profil Fotoğrafı Ekle",
         "removeProfilePicture": "Profil Fotoğrafını Kaldır"
     },
-    "somethingWentWrong":"Bir şeyler yanlış gitti. Lütfen tekrar deneyin.",
+    "newPost": {
+        "newPost": "Yeni Gönderi",
+        "share": "Paylaş",
+        "PickAnImage": "Bir dosya seçiniz.",
+        "writeSomething": "Bir şeyler yazın...",
+        "postShared": "Gönderi paylaşıldı."
+    },
+    "somethingWentWrong": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin.",
     "follow": "Takip Et",
     "unfollow": "Takibi Bırak"
 }
