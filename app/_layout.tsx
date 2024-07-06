@@ -9,6 +9,7 @@ import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { Provider } from 'react-redux';
 import store from '@/store/store';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 
 const darkTheme = {
   ...MD2DarkTheme,
@@ -27,6 +28,7 @@ const lightTheme = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient()
 
 export default function RootLayout() {
   const colorScheme = useColorScheme ? useColorScheme() : 'light';
@@ -50,18 +52,20 @@ export default function RootLayout() {
     <Provider store={store}>
       <PaperProvider theme={theme}>
         <SafeAreaProvider>
-          <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
-            <AlertNotificationRoot>
-              <Portal.Host>
-                <Stack>
-                  <Stack.Screen name="index" options={{ headerShown: false }} />
-                  <Stack.Screen name="register" options={{ headerShown: false }} />
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-              </Portal.Host>
-            </AlertNotificationRoot>
-          </SafeAreaView>
+          <QueryClientProvider client={queryClient}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
+              <AlertNotificationRoot>
+                <Portal.Host>
+                  <Stack>
+                    <Stack.Screen name="index" options={{ headerShown: false }} />
+                    <Stack.Screen name="register" options={{ headerShown: false }} />
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                </Portal.Host>
+              </AlertNotificationRoot>
+            </SafeAreaView>
+          </QueryClientProvider>
         </SafeAreaProvider>
       </PaperProvider>
     </Provider>
