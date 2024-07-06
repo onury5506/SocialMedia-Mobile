@@ -41,5 +41,22 @@
         "followers": "Takipçi",
         "following": "Takip",
         "editProfile": "Profili Düzenle"
-    }
+    },
+    "updateUser": {
+        "error": {
+            "oldPasswordIncorrect": "Eski şifre yanlış.",
+            "somethingWentWrong": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
+        },
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "close": "Kapat",
+        "oldPassword": "Eski Şifre",
+        "newPassword": "Yeni Şifre",
+        "username": "Kullanıcı Adı",
+        "name": "Ad ve Soyad",
+        "about": "Hakkımda",
+        "editProfilePicture": "Yeni Profil Fotoğrafı Ekle",
+        "removeProfilePicture": "Profil Fotoğrafını Kaldır"
+    },
+    "somethingWentWrong":"Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
 }

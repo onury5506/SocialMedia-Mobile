@@ -20,25 +20,43 @@
             "userOrPasswordInvalid": "Invalid username or password!"
         },
         "register": {
-            "usernameMinlength": "Username must be at least 4 characters long.",
-            "usernameMaxlength": "Username must be at most 20 characters long.",
+            "usernameMinlength": "Username must be at least 4 characters.",
+            "usernameMaxlength": "Username must be at most 20 characters.",
             "usernameEmpty": "Username cannot be empty.",
             "usernameAlreadyExists": "This username is already taken.",
-            "nameMinlength": "Full name must be at least 4 characters long.",
-            "nameMaxlength": "Full name must be at most 50 characters long.",
+            "nameMinlength": "Full name must be at least 4 characters.",
+            "nameMaxlength": "Full name must be at most 50 characters.",
             "nameEmpty": "Full name cannot be empty.",
             "emailEmpty": "Email cannot be empty.",
             "emailInvalid": "Invalid email address.",
-            "emailMaxlength": "Email must be at most 50 characters long.",
+            "emailMaxlength": "Email must be at most 50 characters.",
             "emailAlreadyExists": "This email address is already in use.",
             "passwordEmpty": "Password cannot be empty.",
-            "passwordWeak": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
-            "passwordMaxlength": "Password must be at most 20 characters long."
+            "passwordWeak": "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, and one number.",
+            "passwordMaxlength": "Password must be at most 20 characters."
         }
     },
-    "profile":{
+    "profile": {
         "posts": "Posts",
         "followers": "Followers",
-        "following": "Following"
-    }
+        "following": "Following",
+        "editProfile": "Edit Profile"
+    },
+    "updateUser": {
+        "error": {
+            "oldPasswordIncorrect": "Old password is incorrect.",
+            "somethingWentWrong": "Something went wrong. Please try again."
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "close": "Close",
+        "oldPassword": "Old Password",
+        "newPassword": "New Password",
+        "username": "Username",
+        "name": "Full Name",
+        "about": "About",
+        "editProfilePicture": "Add New Profile Picture",
+        "removeProfilePicture": "Remove Profile Picture"
+    },
+    "somethingWentWrong": "Something went wrong. Please try again."
 }
