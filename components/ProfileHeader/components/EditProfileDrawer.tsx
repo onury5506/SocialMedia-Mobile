@@ -1,9 +1,9 @@
-import { UpdateUserDTO, UpdateUserProfilePictureDTO, UserProfileDTO } from "@/api/models";
-import { Button, Divider, Portal, Surface, Text, TextInput } from "react-native-paper";
+import { UpdateUserDTO, UserProfileDTO } from "@/api/models";
+import { Button, Divider, Portal, Surface, TextInput } from "react-native-paper";
 import { Dimensions, StyleSheet, Image, View, TouchableOpacity, BackHandler } from "react-native";
 import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useEffect, useState } from "react";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { i18n } from "@/locales/locales";
 import { getTranslation } from "@/locales/getTranslation";
 import { updateUser } from "@/api/user.api";
