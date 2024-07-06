@@ -24,7 +24,7 @@ export interface CreatePostRequestDto {
      * @type {string}
      * @memberof CreatePostRequestDto
      */
-    content: string;
+    content?: string;
 
     /**
      * @type {string}

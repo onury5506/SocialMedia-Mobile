@@ -24,5 +24,11 @@ export interface CreatePostResponseDto {
      * @type {string}
      * @memberof CreatePostResponseDto
      */
+    id: string;
+
+    /**
+     * @type {string}
+     * @memberof CreatePostResponseDto
+     */
     signedUrl: string;
 }
