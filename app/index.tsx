@@ -1,4 +1,4 @@
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { i18n } from '@/locales/locales'
@@ -25,7 +25,7 @@ export default function Login() {
             password: data.password
         }).then(() => {
             return me()
-        }).then(()=>{
+        }).then(() => {
             router.replace('(tabs)')
         }).catch((err) => {
             Toast.show({
@@ -37,61 +37,64 @@ export default function Login() {
     }
 
     return (
-        <Surface style={styles.loginContainer}>
-            <Image
-                source={require('@/assets/images/react-logo.png')}
-                style={styles.logo}
-            />
-            <Controller
-                control={control}
-                name="username"
-                render={({ field: { onChange, value } }) => {
-                    return (
-                        <TextInput value={value} onChangeText={onChange} style={styles.input} label={i18n.t('login.usernameOrEmail')} />
-                    )
-                }}
 
-                rules={{
-                    required: {
-                        value: true,
-                        message: "fill"
-                    }
-                }}
-            />
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ width: "100%", flex: 1 }}>
+            <Surface style={styles.loginContainer}>
+                <Image
+                    source={require('@/assets/images/react-logo.png')}
+                    style={styles.logo}
+                />
+                <Controller
+                    control={control}
+                    name="username"
+                    render={({ field: { onChange, value } }) => {
+                        return (
+                            <TextInput value={value} onChangeText={onChange} style={styles.input} label={i18n.t('login.usernameOrEmail')} />
+                        )
+                    }}
 
-            <Controller
-                control={control}
-                name="password"
-                render={({ field: { onChange, value } }) => {
-                    return (
-                        <TextInput
-                            onChangeText={onChange}
-                            style={styles.input}
-                            label={i18n.t('login.password')}
-                            secureTextEntry={!showPassword}
-                            right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
-                        />
-                    )
-                }}
+                    rules={{
+                        required: {
+                            value: true,
+                            message: "fill"
+                        }
+                    }}
+                />
 
-                rules={{
-                    required: {
-                        value: true,
-                        message: "fill"
-                    }
-                }}
-            />
+                <Controller
+                    control={control}
+                    name="password"
+                    render={({ field: { onChange, value } }) => {
+                        return (
+                            <TextInput
+                                onChangeText={onChange}
+                                style={styles.input}
+                                label={i18n.t('login.password')}
+                                secureTextEntry={!showPassword}
+                                right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
+                            />
+                        )
+                    }}
 
-            <Button onPress={handleSubmit(onLogin)} style={styles.loginButton} mode="outlined">{i18n.t("login.login")}</Button>
-            <Text style={{ ...styles.orText, color: theme.colors.onSurface }} variant="bodyMedium">
-                {i18n.t("login.dontYouHaveAnAccount")}
-                <Text onPress={() => router.navigate('register')} style={{
-                    color: theme.colors.primary,
-                }}>
-                    {'  '}{i18n.t("login.register")}
+                    rules={{
+                        required: {
+                            value: true,
+                            message: "fill"
+                        }
+                    }}
+                />
+
+                <Button onPress={handleSubmit(onLogin)} style={styles.loginButton} mode="outlined">{i18n.t("login.login")}</Button>
+                <Text style={{ ...styles.orText, color: theme.colors.onSurface }} variant="bodyMedium">
+                    {i18n.t("login.dontYouHaveAnAccount")}
+                    <Text onPress={() => router.navigate('register')} style={{
+                        color: theme.colors.primary,
+                    }}>
+                        {'  '}{i18n.t("login.register")}
+                    </Text>
                 </Text>
-            </Text>
-        </Surface>
+            </Surface>
+        </KeyboardAvoidingView>
     );
 }
 

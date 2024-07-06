@@ -1,6 +1,6 @@
 import { UpdateUserDTO, UserProfileDTO } from "@/api/models";
 import { Button, Divider, Portal, Surface, TextInput } from "react-native-paper";
-import { Dimensions, StyleSheet, Image, View, TouchableOpacity, BackHandler } from "react-native";
+import { Dimensions, StyleSheet, Image, View, TouchableOpacity, BackHandler, KeyboardAvoidingView, Platform } from "react-native";
 import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -100,107 +100,109 @@ export default function EditProfileDrawer({ profile, onClose }: EditProfileDrawe
         })
     }
 
-    
+
 
 
     return (
         <Portal>
-            <Animated.View style={[styles.container, animatedStyles]}>
-                <Surface style={styles.container}>
-                    <TouchableOpacity onPress={()=>{setShowEditProfileModal(true)}}>
-                        <Image
-                            style={styles.profilePicture}
-                            source={profile.profilePicture ? { uri: profile.profilePicture } : require("@/assets/images/noProfilePicture.png")}
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ width: "100%", flex: 1 }}>
+                <Animated.View style={[styles.container, animatedStyles]}>
+                    <Surface style={styles.container}>
+                        <TouchableOpacity onPress={() => { setShowEditProfileModal(true) }}>
+                            <Image
+                                style={styles.profilePicture}
+                                source={profile.profilePicture ? { uri: profile.profilePicture } : require("@/assets/images/noProfilePicture.png")}
+                            />
+                        </TouchableOpacity>
+                        <Controller
+                            control={control}
+                            name="name"
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    <TextInput
+                                        value={value} onChangeText={onChange}
+                                        style={styles.input}
+                                        label={i18n.t('updateUser.name')}
+                                    />
+                                )
+                            }}
                         />
-                    </TouchableOpacity>
-                    <Controller
-                        control={control}
-                        name="name"
-                        render={({ field: { onChange, value } }) => {
-                            return (
-                                <TextInput
-                                    value={value} onChangeText={onChange}
-                                    style={styles.input}
-                                    label={i18n.t('updateUser.name')}
-                                />
-                            )
-                        }}
-                    />
 
-                    <Divider style={styles.divider} />
+                        <Divider style={styles.divider} />
 
-                    <Controller
-                        control={control}
-                        name="username"
-                        render={({ field: { onChange, value } }) => {
-                            return (
-                                <TextInput
-                                    value={value} onChangeText={onChange}
-                                    style={styles.input}
-                                    label={i18n.t('updateUser.username')}
-                                />
-                            )
-                        }}
-                    />
+                        <Controller
+                            control={control}
+                            name="username"
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    <TextInput
+                                        value={value} onChangeText={onChange}
+                                        style={styles.input}
+                                        label={i18n.t('updateUser.username')}
+                                    />
+                                )
+                            }}
+                        />
 
-                    <Divider style={styles.divider} />
+                        <Divider style={styles.divider} />
 
-                    <Controller
-                        control={control}
-                        name="about"
-                        render={({ field: { onChange, value } }) => {
-                            return (
-                                <TextInput
-                                    value={value} onChangeText={onChange}
-                                    style={styles.input}
-                                    label={i18n.t('updateUser.about')}
-                                />
-                            )
-                        }}
-                    />
+                        <Controller
+                            control={control}
+                            name="about"
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    <TextInput
+                                        value={value} onChangeText={onChange}
+                                        style={styles.input}
+                                        label={i18n.t('updateUser.about')}
+                                    />
+                                )
+                            }}
+                        />
 
-                    <Divider style={styles.divider} />
+                        <Divider style={styles.divider} />
 
-                    <Controller
-                        control={control}
-                        name="oldPassword"
-                        render={({ field: { onChange, value } }) => {
-                            return (
-                                <TextInput
-                                    value={value} onChangeText={onChange}
-                                    style={styles.input}
-                                    label={i18n.t('updateUser.oldPassword')}
-                                    secureTextEntry={!showPassword}
-                                    right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
-                                />
-                            )
-                        }}
-                    />
-                    <Controller
-                        control={control}
-                        name="password"
-                        render={({ field: { onChange, value } }) => {
-                            return (
-                                <TextInput
-                                    value={value} onChangeText={onChange}
-                                    style={styles.input}
-                                    label={i18n.t('updateUser.newPassword')}
-                                    secureTextEntry={!showPassword}
-                                    right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
-                                />
-                            )
-                        }}
-                    />
+                        <Controller
+                            control={control}
+                            name="oldPassword"
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    <TextInput
+                                        value={value} onChangeText={onChange}
+                                        style={styles.input}
+                                        label={i18n.t('updateUser.oldPassword')}
+                                        secureTextEntry={!showPassword}
+                                        right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
+                                    />
+                                )
+                            }}
+                        />
+                        <Controller
+                            control={control}
+                            name="password"
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    <TextInput
+                                        value={value} onChangeText={onChange}
+                                        style={styles.input}
+                                        label={i18n.t('updateUser.newPassword')}
+                                        secureTextEntry={!showPassword}
+                                        right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? "eye-off" : "eye"} />}
+                                    />
+                                )
+                            }}
+                        />
 
-                    <View style={styles.buttonsContainer}>
-                        <Button onPress={handleSubmit(onSubmit)} loading={loading} disabled={!isDirty || loading}>{i18n.t("updateUser.save")}</Button>
-                        <Button onPress={handleClose} disabled={loading}>{i18n.t(isDirty ? "updateUser.cancel" : "updateUser.close")}</Button>
-                    </View>
+                        <View style={styles.buttonsContainer}>
+                            <Button onPress={handleSubmit(onSubmit)} loading={loading} disabled={!isDirty || loading}>{i18n.t("updateUser.save")}</Button>
+                            <Button onPress={handleClose} disabled={loading}>{i18n.t(isDirty ? "updateUser.cancel" : "updateUser.close")}</Button>
+                        </View>
 
 
-                </Surface>
-            </Animated.View>
-            <EditProfilePicture visible={showEditProfileModal} onClose={()=>setShowEditProfileModal(false)}/>
+                    </Surface>
+                </Animated.View>
+            </KeyboardAvoidingView>
+            <EditProfilePicture visible={showEditProfileModal} onClose={() => setShowEditProfileModal(false)} />
         </Portal >
 
     )
