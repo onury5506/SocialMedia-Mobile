@@ -36,6 +36,12 @@ export interface MiniUserProfile {
      * @type {string}
      * @memberof MiniUserProfile
      */
+    username: string;
+
+    /**
+     * @type {string}
+     * @memberof MiniUserProfile
+     */
     profilePicture: string;
 
     /**
