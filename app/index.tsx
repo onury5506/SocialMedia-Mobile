@@ -26,7 +26,7 @@ export default function Login() {
         }).then(() => {
             return me()
         }).then(()=>{
-            router.navigate('(tabs)')
+            router.replace('(tabs)')
         }).catch((err) => {
             Toast.show({
                 type: ALERT_TYPE.DANGER,
