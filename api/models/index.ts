@@ -14,8 +14,11 @@ export * from './is-blocked-dto';
 export * from './is-followed-dto';
 export * from './login-dto';
 export * from './login-response-dto';
+export * from './mini-user-profile';
 export * from './object-id';
+export * from './paginated-dto';
 export * from './post-data-dto';
+export * from './post-data-with-writer-dto';
 export * from './post-like-dto';
 export * from './post-unlike-dto';
 export * from './refresh-dto';
@@ -30,4 +33,4 @@ export * from './update-user-profile-picture-dto';
 export * from './user-profile-dto';
 export * from './user-profile-with-relation-dto';
 export * from './view-post-dto';
-export * from './mini-user-profile'
+export * from './writer-data-dto';
