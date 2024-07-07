@@ -130,11 +130,12 @@ export default function NewPost() {
 
             interval = setInterval(async () => {
                 const status = await getPostStatus(post.id)
-
+                
                 if (status === PostDataDtoPostStatusEnum.Inprogress) {
                     return
                 } else if (status === PostDataDtoPostStatusEnum.Failed) {
                     clearInterval(interval)
+                    setLoading(false)
                     reset()
                     Toast.show({
                         type: ALERT_TYPE.DANGER,
