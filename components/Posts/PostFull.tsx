@@ -12,19 +12,45 @@ import { readableNumber } from "@/helpers/readableNumber";
 import { likePost, unlikePost } from "@/api/post.api";
 import { getTranslation } from "@/locales/getTranslation";
 
-function PostImageFull({ url, ratio, blurHash }: PostDataWithWriterDto) {
+let timer: any = null;
+const TIMEOUT = 500
+const debounce = (onDouble: () => void, onSingle= ()=>{}) => {
+    if (timer) {
+        clearTimeout(timer);
+        timer = null;
+        onDouble();
+    } else {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            timer = null;
+            onSingle()
+        }, TIMEOUT);
+    }
+};
+
+interface PostDataWithDoubleClick extends PostDataWithWriterDto {
+    onDoubleTap: () => void
+}
+
+function PostImageFull({ url, ratio, blurHash, onDoubleTap }: PostDataWithDoubleClick) {
     const theme = useTheme()
+
+
     return (
-        <Image
-            source={{ uri: url }}
-            style={{ width: "100%", aspectRatio: ratio, backgroundColor: theme.colors.surface }}
-            contentFit="contain"
-            placeholder={{ blurhash: blurHash }}
-        />
+        <TouchableWithoutFeedback onPress={() => debounce(onDoubleTap)}>
+            <View style={{ width: "100%" }}>
+                <Image
+                    source={{ uri: url }}
+                    style={{ width: "100%", aspectRatio: ratio, backgroundColor: theme.colors.surface }}
+                    contentFit="contain"
+                    placeholder={{ blurhash: blurHash }}
+                />
+            </View>
+        </TouchableWithoutFeedback>
     )
 }
 
-function PostVideoFull({ id, url, ratio, blurHash, width, height }: PostDataWithWriterDto) {
+function PostVideoFull({ id, url, ratio, blurHash, onDoubleTap }: PostDataWithDoubleClick) {
     const player = useRef<Video>(null)
     const theme = useTheme()
     const dispatch = useDispatch()
@@ -59,7 +85,7 @@ function PostVideoFull({ id, url, ratio, blurHash, width, height }: PostDataWith
     }, [playing])
 
     useEffect(() => {
-        player.current?.setIsMutedAsync(isMuted).catch(() => {})
+        player.current?.setIsMutedAsync(isMuted).catch(() => { })
     }, [isMuted])
 
     if (ratio < 1) {
@@ -95,7 +121,7 @@ function PostVideoFull({ id, url, ratio, blurHash, width, height }: PostDataWith
     }
 
     return (
-        <TouchableWithoutFeedback onLongPress={onLongPress} onPress={onPress}>
+        <TouchableWithoutFeedback onLongPress={onLongPress} onPress={()=>debounce(onDoubleTap, onPress)}>
             <Surface style={style}>
                 <Video
                     ref={player}
@@ -138,20 +164,25 @@ export default function PostFull(post: PostDataWithWriterDto) {
 
     const component = useMemo(() => {
         if (postType === 'image') {
-            return <PostImageFull {...post} />
+            return <PostImageFull {...post} onDoubleTap={onDoubleTap} />
         } else if (postType === 'video') {
-            return <PostVideoFull {...post} />
+            return <PostVideoFull {...post} onDoubleTap={onDoubleTap} />
         }
         return null
     }, [postType])
 
+    function onDoubleTap() {
+        if(liked) return
+        toggleLike()
+    }
+
     function toggleLike() {
         if (liked) {
             setLiked(false)
-            unlikePost(post.id)
+            unlikePost(post.id).catch()
         } else {
             setLiked(true)
-            likePost(post.id)
+            likePost(post.id).catch()
         }
     }
 
@@ -211,7 +242,7 @@ export default function PostFull(post: PostDataWithWriterDto) {
                         {
                             showShowMoreButton &&
                             <Text onPress={() => setShowMore(true)} style={{ color: theme.colors.primary }}>
-                                {' '+i18n.t("showMore")}
+                                {' ' + i18n.t("showMore")}
                             </Text>
                         }
                     </Text>
