@@ -41,7 +41,7 @@ function PostVideoFull({ id, url, ratio, blurHash, width, height }: PostDataWith
         }
 
         if (playingVideoId === id) {
-            setIsMuted(true)
+            setIsMuted(false)
             setPlaying(true)
         } else {
             setPlaying(false)
@@ -59,7 +59,7 @@ function PostVideoFull({ id, url, ratio, blurHash, width, height }: PostDataWith
     }, [playing])
 
     useEffect(() => {
-        player.current?.setIsMutedAsync(isMuted)
+        player.current?.setIsMutedAsync(isMuted).catch(() => {})
     }, [isMuted])
 
     if (ratio < 1) {
