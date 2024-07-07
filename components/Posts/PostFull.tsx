@@ -172,7 +172,7 @@ export default function PostFull(post: PostDataWithWriterDto) {
         <View style={styles.postContainer}>
             <View style={styles.writer}>
                 <Image
-                    source={writer.profilePicture}
+                    source={writer.profilePicture ? writer.profilePicture : require("@/assets/images/noProfilePicture.png")}
                     style={styles.writerPP}
                     contentFit="fill"
                     placeholder={{ blurhash: writer.profilePictureBlurhash }}
