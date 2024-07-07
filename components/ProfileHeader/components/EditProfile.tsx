@@ -1,15 +1,20 @@
 import { i18n } from "@/locales/locales";
 import { Button } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import EditProfileDrawer from "./EditProfileDrawer";
 import { useSelector } from "react-redux";
 import { selectProfile } from "@/slices/userSlice";
+import { useFocusEffect } from "expo-router";
 
 export function EditProfileButton() {
     const user = useSelector(selectProfile)
     const [showDrawer, setShowDrawer] = useState(false);
-
+    useFocusEffect(useCallback(() => {
+        return () => {
+            setShowDrawer(false)
+        }
+    }, []))
     return (
         <View>
             <Button style={styles.editProfileButton} labelStyle={styles.editProfileButtonLabel}
