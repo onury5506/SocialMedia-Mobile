@@ -6,6 +6,8 @@ import PostFullViewer from "./PostFullViewer";
 import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useEffect, useState } from "react";
 import { set } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { setVideo } from "@/slices/activeVideoSlice";
 
 export interface PostGridViewerProps {
     posts: PostDataWithWriterDto[];
@@ -16,6 +18,7 @@ export interface PostGridViewerProps {
 }
 
 export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRefresh, refreshing }: PostGridViewerProps) {
+    const dispatch = useDispatch()
     const translateX = useSharedValue(Dimensions.get('window').width);
     const [focusPostIndex, setFocusPostIndex] = useState<number | undefined>(undefined)
     const animatedStyles = useAnimatedStyle(() => {
@@ -64,6 +67,7 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
             reduceMotion: ReduceMotion.System,
         });
         setFocusPostIndex(undefined)
+        dispatch(setVideo(undefined))
     }
 
     return (
