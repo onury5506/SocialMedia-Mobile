@@ -13,9 +13,11 @@ export interface PostFullViewerProps {
     hasNextPage: boolean;
     focusPostIndex?: number;
     fetchNextPage: () => void;
+    onRefresh?: () => void;
+    refreshing?: boolean;
 }
 
-export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focusPostIndex }: PostFullViewerProps) {
+export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focusPostIndex, onRefresh, refreshing }: PostFullViewerProps) {
     const dispatch = useDispatch()
     const listRef = useRef<FlatList<PostDataWithWriterDto>>(null)
 
@@ -54,6 +56,8 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
                 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onScrollToIndexFailed={console.log}
+                onRefresh={onRefresh}
+                refreshing={!!refreshing}
             />
         </Surface>
     )
