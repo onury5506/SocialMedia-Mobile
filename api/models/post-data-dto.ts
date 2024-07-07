@@ -52,6 +52,36 @@ export interface PostDataDto {
     content: TranslateResultDto;
 
     /**
+     * @type {string}
+     * @memberof PostDataDto
+     */
+    blurHash: string;
+
+    /**
+     * @type {string}
+     * @memberof PostDataDto
+     */
+    thumbnail?: string;
+
+    /**
+     * @type {number}
+     * @memberof PostDataDto
+     */
+    width: number;
+
+    /**
+     * @type {number}
+     * @memberof PostDataDto
+     */
+    height: number;
+
+    /**
+     * @type {number}
+     * @memberof PostDataDto
+     */
+    ratio: number;
+
+    /**
      * @type {Array<string>}
      * @memberof PostDataDto
      */

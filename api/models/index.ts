@@ -9,11 +9,11 @@ export * from './create-post-response-dto';
 export * from './follow-user-dto';
 export * from './hashtag-dto';
 export * from './inline-response200';
+export * from './inline-response2001';
 export * from './is-blocked-dto';
 export * from './is-followed-dto';
 export * from './login-dto';
 export * from './login-response-dto';
-export * from './mini-user-profile';
 export * from './object-id';
 export * from './post-data-dto';
 export * from './post-like-dto';
@@ -30,3 +30,4 @@ export * from './update-user-profile-picture-dto';
 export * from './user-profile-dto';
 export * from './user-profile-with-relation-dto';
 export * from './view-post-dto';
+export * from './mini-user-profile'
