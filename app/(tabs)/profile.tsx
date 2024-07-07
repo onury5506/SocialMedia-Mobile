@@ -1,13 +1,13 @@
 import { PostDataDto } from '@/api/models';
 import { getPostsOfUser } from '@/api/post.api';
 import { me } from '@/api/user.api';
-import PostGrid from '@/components/Posts/PostGrid';
+import PostGridViewer from '@/components/Posts/PostGridViewer';
 import ProfileHeader from '@/components/ProfileHeader/ProfileHeader';
 import { selectProfile } from '@/slices/userSlice';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Surface } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -40,23 +40,8 @@ export default function ProfileScreen() {
     }
   }, [data])
 
-  function reset() {
-    idListRef.current = {}
-    setPosts([])
-    queryClient.cancelQueries({
-      queryKey: [`posts:${user?.id}`],
-      exact: true
-    })
-    queryClient.resetQueries({
-      queryKey: [`posts:${user?.id}`],
-      exact: true
-    })
-  }
-
   useFocusEffect(useCallback(() => {
     me().catch(err => { })
-
-    return reset
   }, []))
 
   if (user === undefined) {
@@ -66,16 +51,7 @@ export default function ProfileScreen() {
   return (
     <Surface style={styles.container} >
       <ProfileHeader profile={user} />
-      <FlatList
-        data={posts}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => <PostGrid {...item} />}
-        numColumns={3}
-        style={styles.gridList}
-        columnWrapperStyle={{ justifyContent: 'flex-start', gap: 1 }}
-        ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
-        onEndReached={(thresh) => hasNextPage && fetchNextPage()}
-      />
+      <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
     </Surface>
   );
 }
@@ -84,8 +60,5 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
-  },
-  gridList: {
-    width: '100%',
   }
 });
