@@ -136,7 +136,6 @@ export default function NewPost() {
                 } else if (status === PostDataDtoPostStatusEnum.Failed) {
                     clearInterval(interval)
                     setLoading(false)
-                    reset()
                     Toast.show({
                         type: ALERT_TYPE.DANGER,
                         textBody: i18n.t("error.newPost.someThingWentWrongWhileProcessing"),
@@ -165,7 +164,6 @@ export default function NewPost() {
         } catch (err) {
             if (interval) clearInterval(interval)
             setLoading(false)
-            reset()
             Toast.show({
                 type: ALERT_TYPE.DANGER,
                 textBody: i18n.t("error.newPost.someThingWentWrongWhileUploading"),
@@ -222,6 +220,7 @@ export default function NewPost() {
                         multiline
                         value={content}
                         onChangeText={setContent}
+                        maxLength={240}
                         style={{ width: "90%", flex: 1, marginTop: 10 }}
                         disabled={loading}
                     />
