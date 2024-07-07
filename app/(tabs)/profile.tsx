@@ -1,4 +1,4 @@
-import { PostDataDto } from '@/api/models';
+import { PostDataDto, PostDataWithWriterDto } from '@/api/models';
 import { getPostsOfUser } from '@/api/post.api';
 import { me } from '@/api/user.api';
 import PostGridViewer from '@/components/Posts/PostGridViewer';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 export default function ProfileScreen() {
   const user = useSelector(selectProfile)
   const idListRef = useRef<any>({})
-  const [posts, setPosts] = useState<PostDataDto[]>([])
+  const [posts, setPosts] = useState<PostDataWithWriterDto[]>([])
   const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [`posts:${user?.id}`],
     queryFn: ({ pageParam = 1 }) => getPostsOfUser(user?.id!, pageParam),
@@ -26,7 +26,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     if (data) {
-      const newPosts: PostDataDto[] = []
+      const newPosts: PostDataWithWriterDto[] = []
       idListRef.current = {}
       data.pages.forEach(page => {
         page.data.forEach(post => {
