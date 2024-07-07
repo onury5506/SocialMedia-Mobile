@@ -1,13 +1,9 @@
-import { StyleSheet } from 'react-native';
 import { PostDataWithWriterDto } from '@/api/models';
 import { useEffect, useRef, useState } from 'react';
 import PostFullViewer from '@/components/Posts/PostFullViewer';
 import { feedRefresh, getMeFeed } from '@/api/feed.api';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-<<<<<<< HEAD
 import { useNavigation } from '@react-navigation/native';
-=======
->>>>>>> e7559d6d6916f98245da0bd1b10de33256eb21a9
 
 export default function HomeScreen() {
   const idListRef = useRef<any>({})
