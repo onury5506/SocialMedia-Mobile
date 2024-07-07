@@ -1,6 +1,5 @@
 import { PostDataWithWriterDto, PostDataWithWriterDtoPostTypeEnum } from "@/api/models";
 import { FlatList, StyleSheet, View, Image, ViewToken } from 'react-native';
-import PostGrid from "./PostGrid";
 import PostFull from "./PostFull";
 import { Divider, Surface } from "react-native-paper";
 import { setVideo } from "@/slices/activeVideoSlice";
@@ -32,6 +31,12 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
             listRef.current?.scrollToIndex({ index: focusPostIndex, animated: false })
         }
     }, [focusPostIndex])
+
+    useEffect(() => {
+        if (refreshing) {
+            listRef.current?.scrollToIndex({ index: 0, animated: true })
+        }
+    }, [refreshing])
 
     function onViewableItemsChanged({ viewableItems, changed }: {
         viewableItems: ViewToken<PostDataWithWriterDto>[];

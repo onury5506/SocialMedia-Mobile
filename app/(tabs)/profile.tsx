@@ -4,6 +4,7 @@ import { me } from '@/api/user.api';
 import PostGridViewer from '@/components/Posts/PostGridViewer';
 import ProfileHeader from '@/components/ProfileHeader/ProfileHeader';
 import { selectProfile } from '@/slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,6 +17,7 @@ export default function ProfileScreen() {
   const user = useSelector(selectProfile)
   const idListRef = useRef<any>({})
   const [posts, setPosts] = useState<PostDataWithWriterDto[]>([])
+  const [refreshing, setRefreshing] = useState(false)
   const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [`posts:${user?.id}`],
     queryFn: ({ pageParam = 1 }) => getPostsOfUser(user?.id!, pageParam),
@@ -23,6 +25,35 @@ export default function ProfileScreen() {
     getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined,
   })
   const queryClient = useQueryClient()
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    //@ts-ignore
+    navigation.addListener('tabPress', tabPress)
+    
+    return () => {
+      //@ts-ignore
+      navigation.removeListener('tabPress', tabPress)
+    }
+  }, [navigation])
+
+  function tabPress(ev:any) {
+    if(!navigation.isFocused()) {
+      return
+    }
+    ev.preventDefault()
+    refresh()
+  }
+
+  function refresh() {
+    setRefreshing(true)
+    queryClient.resetQueries({
+      queryKey: [`posts:${user?.id}`],
+      exact: true
+    }).then(() => {
+      setRefreshing(false)
+    })
+  }
 
   useEffect(() => {
     if (data) {
@@ -52,7 +83,7 @@ export default function ProfileScreen() {
     <Portal.Host>
       <Surface style={styles.container} >
         <ProfileHeader profile={user} />
-        <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
+        <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh} />
       </Surface>
     </Portal.Host>
   );

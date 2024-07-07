@@ -1,11 +1,10 @@
 import { PostDataWithWriterDto } from "@/api/models";
 import { BackHandler, Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import PostGrid from "./PostGrid";
-import { IconButton, Portal, Surface, Text } from "react-native-paper";
+import { IconButton, Portal, Surface } from "react-native-paper";
 import PostFullViewer from "./PostFullViewer";
 import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
-import { useEffect, useState } from "react";
-import { set } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setVideo } from "@/slices/activeVideoSlice";
 
@@ -18,6 +17,7 @@ export interface PostGridViewerProps {
 }
 
 export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRefresh, refreshing }: PostGridViewerProps) {
+    const listRef = useRef<FlatList<PostDataWithWriterDto>>(null)
     const dispatch = useDispatch()
     const translateX = useSharedValue(Dimensions.get('window').width);
     const [focusPostIndex, setFocusPostIndex] = useState<number | undefined>(undefined)
@@ -26,6 +26,12 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
             transform: [{ translateX: translateX.value }]
         }
     })
+
+    useEffect(() => {
+        if(refreshing) {
+            listRef.current?.scrollToIndex({ index: 0, animated: true })
+        }
+    }, [refreshing])
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackPress);
@@ -74,6 +80,7 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
         <>
             <FlatList
                 data={posts}
+                ref={listRef}
                 keyExtractor={item => item.id}
                 renderItem={({ item, index }) => <PostGrid {...item} onPress={() => { clickToGridPost(index) }} />}
                 numColumns={3}

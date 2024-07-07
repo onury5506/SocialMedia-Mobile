@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import PostFullViewer from '@/components/Posts/PostFullViewer';
 import { feedRefresh, getMeFeed } from '@/api/feed.api';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
   const idListRef = useRef<any>({})
@@ -16,6 +17,24 @@ export default function HomeScreen() {
     getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined,
   })
   const queryClient = useQueryClient()
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    //@ts-ignore
+    navigation.addListener('tabPress', tabPress)
+    return () => {
+      //@ts-ignore
+      navigation.removeListener('tabPress', tabPress)
+    }
+  }, [navigation])
+
+  function tabPress(ev:any) {
+    if(!navigation.isFocused()) {
+      return
+    }
+    ev.preventDefault()
+    refresh()
+  }
 
   function refresh() {
     setRefreshing(true)

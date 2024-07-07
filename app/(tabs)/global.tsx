@@ -1,8 +1,8 @@
 import { feedRefresh, getGlobalFeed } from "@/api/feed.api";
 import { PostDataWithWriterDto } from "@/api/models";
-import PostFullViewer from "@/components/Posts/PostFullViewer";
 import PostGridViewer from "@/components/Posts/PostGridViewer";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigation } from "expo-router";
 import { useRef, useState, useEffect } from "react";
 import { Surface } from "react-native-paper";
 
@@ -17,6 +17,24 @@ export default function Global() {
         getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined,
     })
     const queryClient = useQueryClient()
+    const navigation = useNavigation()
+
+    useEffect(() => {
+        //@ts-ignore
+        navigation.addListener('tabPress', tabPress)
+        return () => {
+            //@ts-ignore
+            navigation.removeListener('tabPress', tabPress)
+        }
+    }, [navigation])
+
+    function tabPress(ev: any) {
+        if (!navigation.isFocused()) {
+            return
+        }
+        ev.preventDefault()
+        refresh()
+    }
 
     function refresh() {
         setRefreshing(true)
@@ -57,7 +75,7 @@ export default function Global() {
 
     return (
         <Surface style={{ width: "100%", flex: 1 }}>
-            <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh} />
+            <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh}  />
         </Surface>
     );
 }
