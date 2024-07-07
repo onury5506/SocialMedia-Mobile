@@ -6,7 +6,6 @@ import { PaginatedDto } from "./paginated.dto";
 const baseUrl = `${generalBaseUrl}/feed`
 
 export function getMeFeed(page: number): Promise<PaginatedDto<PostDataWithWriterDto>> {
-    console.log('getMeFeed', `${baseUrl}/me/${page}`)
     return api.get<PaginatedDto<PostDataWithWriterDto>>(`${baseUrl}/me/${page}`).then(res => {
         return res.data
     }).catch(err => {
@@ -16,7 +15,6 @@ export function getMeFeed(page: number): Promise<PaginatedDto<PostDataWithWriter
 }
 
 export function feedRefresh(): Promise<void> {
-    console.log('feedRefresh', `${baseUrl}/refresh`)
     return api.post<void>(`${baseUrl}/refresh`).then(res => {
         return res.data
     }).catch(err => {
