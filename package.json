@@ -45,7 +45,8 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
-    "expo-av": "~14.0.6"
+    "expo-av": "~14.0.6",
+    "expo-image": "~1.12.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
