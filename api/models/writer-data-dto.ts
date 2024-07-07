@@ -43,4 +43,10 @@ export interface WriterDataDto {
      * @memberof WriterDataDto
      */
     profilePicture: string;
+
+    /**
+     * @type {string}
+     * @memberof WriterDataDto
+     */
+    profilePictureBlurhash: string;
 }

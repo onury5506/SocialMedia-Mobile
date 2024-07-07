@@ -1,9 +1,9 @@
-import { PostDataDto, PostDataDtoPostTypeEnum } from "@/api/models";
+import { PostDataWithWriterDto, PostDataWithWriterDtoPostTypeEnum } from "@/api/models";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Image } from 'expo-image';
 
-export interface PostGridProps extends PostDataDto {
+export interface PostGridProps extends PostDataWithWriterDto {
     onPress?: (id: string) => void;
 }
 
@@ -18,7 +18,7 @@ export default function PostGrid({ id, url, postType, blurHash, thumbnail, onPre
         <TouchableOpacity style={styles.container} onPress={handlePress}>
             <Image
                 style={styles.image}
-                source= {postType === PostDataDtoPostTypeEnum.Image ? url : thumbnail}
+                source= {postType === PostDataWithWriterDtoPostTypeEnum.Image ? url : thumbnail}
                 placeholder={{ blurhash: blurHash }}
                 contentFit="cover"
                 transition={1000}

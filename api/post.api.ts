@@ -1,4 +1,4 @@
-import { CreatePostRequestDto, CreatePostResponseDto, PostDataDto, PostDataDtoPostStatusEnum } from "./models";
+import { CreatePostRequestDto, CreatePostResponseDto, PostDataDtoPostStatusEnum, PostDataWithWriterDto, PostLikeDto, PostUnlikeDto } from "./models";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
 import { PaginatedDto } from "./paginated.dto";
@@ -6,8 +6,8 @@ import * as FileSystem from 'expo-file-system';
 
 const baseUrl = `${generalBaseUrl}/post`
 
-export function getPostsOfUser(userId: string, page: number): Promise<PaginatedDto<PostDataDto>> {
-    return api.get<PaginatedDto<PostDataDto>>(`${baseUrl}/postOf/${userId}/${page}`).then(res => {
+export function getPostsOfUser(userId: string, page: number): Promise<PaginatedDto<PostDataWithWriterDto>> {
+    return api.get<PaginatedDto<PostDataWithWriterDto>>(`${baseUrl}/postOf/${userId}/${page}`).then(res => {
         return res.data
     }).catch(err => {
         throw err?.response?.data
@@ -45,4 +45,26 @@ export async function uploadFileWithSignedUrl(signedUrl: string, fileUri:string,
     if(res.status !== 200) {
         throw new Error(res.body)
     }
+}
+
+export function likePost(postId: string): Promise<void> {
+    const postData: PostLikeDto = {
+        postId
+    }
+    return api.post<void>(`${baseUrl}/like`,postData).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function unlikePost(postId: string): Promise<void> {
+    const postData: PostUnlikeDto = {
+        postId
+    }
+    return api.post<void>(`${baseUrl}/unlike`,postData).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
 }
