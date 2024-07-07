@@ -9,7 +9,7 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { Surface } from 'react-native-paper';
+import { Surface, Portal } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 export default function ProfileScreen() {
@@ -49,10 +49,12 @@ export default function ProfileScreen() {
   }
 
   return (
-    <Surface style={styles.container} >
-      <ProfileHeader profile={user} />
-      <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
-    </Surface>
+    <Portal.Host>
+      <Surface style={styles.container} >
+        <ProfileHeader profile={user} />
+        <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
+      </Surface>
+    </Portal.Host>
   );
 }
 
