@@ -12,20 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { PostDataDto } from './post-data-dto';
+import { PaginatedDto } from './paginated-dto';
+import { PostDataWithWriterDto } from './post-data-with-writer-dto';
  /**
  * 
  *
  * @export
  * @interface InlineResponse2001
  */
-export interface InlineResponse2001 {
+export interface InlineResponse2001 extends PaginatedDto {
 
     /**
-     * @type {Array<PostDataDto>}
+     * @type {Array<PostDataWithWriterDto>}
      * @memberof InlineResponse2001
      */
-    data?: Array<PostDataDto>;
+    data?: Array<PostDataWithWriterDto>;
 
     /**
      * @type {number}

@@ -54,6 +54,12 @@ export interface UserProfileWithRelationDTO {
     profilePicture: string;
 
     /**
+     * @type {string}
+     * @memberof UserProfileWithRelationDTO
+     */
+    profilePictureBlurhash?: string;
+
+    /**
      * @type {number}
      * @memberof UserProfileWithRelationDTO
      */

@@ -13,13 +13,14 @@
  */
 
 import { MiniUserProfile } from './mini-user-profile';
+import { PaginatedDto } from './paginated-dto';
  /**
  * 
  *
  * @export
  * @interface InlineResponse200
  */
-export interface InlineResponse200 {
+export interface InlineResponse200 extends PaginatedDto {
 
     /**
      * @type {Array<MiniUserProfile>}
