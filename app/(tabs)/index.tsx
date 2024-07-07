@@ -1,52 +1,65 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet } from 'react-native';
+import { PostDataWithWriterDto } from '@/api/models';
+import { useEffect, useRef, useState } from 'react';
+import PostFullViewer from '@/components/Posts/PostFullViewer';
+import { feedRefresh, getMeFeed } from '@/api/feed.api';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function HomeScreen() {
+  const idListRef = useRef<any>({})
+  const [posts, setPosts] = useState<PostDataWithWriterDto[]>([]);
+  const [refreshing, setRefreshing] = useState(false)
+  const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: [`feed:me`],
+    queryFn: ({ pageParam = 1 }) => getMeFeed(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined,
+  })
+  const queryClient = useQueryClient()
+
+  function refresh() {
+    setRefreshing(true)
+    feedRefresh().then(() => {
+      queryClient.resetQueries({
+        queryKey: [`feed:me`],
+        exact: true
+      })
+    }).finally(() => {
+      setRefreshing(false)
+    })
+  }
+
+  useEffect(() => {
+    if (data) {
+      const newPosts: PostDataWithWriterDto[] = []
+      idListRef.current = {}
+      data.pages.forEach(page => {
+        console.log("##############")
+        console.log(JSON.stringify(page.data, null, 2))
+        page.data.forEach(post => {
+          if (!idListRef.current[post.id]) {
+            idListRef.current[post.id] = true
+            newPosts.push(post)
+          }
+        })
+      })
+      setPosts(newPosts)
+      console.log("@@@@@@@@@@@@@@@@")
+      console.log(JSON.stringify(newPosts, null, 2))
+
+      if (newPosts.length === 0) {
+        feedRefresh().then(() => {
+          queryClient.resetQueries({
+            queryKey: [`feed:me`],
+            exact: true
+          })
+        })
+      }
+    }
+  }, [data])
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <PostFullViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh}/>
   );
 }
 
