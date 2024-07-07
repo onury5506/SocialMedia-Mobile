@@ -11,9 +11,11 @@ export interface PostGridViewerProps {
     posts: PostDataWithWriterDto[];
     hasNextPage: boolean;
     fetchNextPage: () => void;
+    refreshing?: boolean;
+    onRefresh?: () => void;
 }
 
-export default function PostGridViewer({ posts, hasNextPage, fetchNextPage }: PostGridViewerProps) {
+export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRefresh, refreshing }: PostGridViewerProps) {
     const translateX = useSharedValue(Dimensions.get('window').width);
     const [focusPostIndex, setFocusPostIndex] = useState<number | undefined>(undefined)
     const animatedStyles = useAnimatedStyle(() => {
@@ -75,6 +77,8 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage }: Po
                 columnWrapperStyle={{ justifyContent: 'flex-start', gap: 1 }}
                 ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
                 onEndReached={(thresh) => hasNextPage && fetchNextPage()}
+                onRefresh={onRefresh}
+                refreshing={!!refreshing}
             />
             <Portal>
                 <Animated.View style={[styles.fullListContainer, animatedStyles]}>
@@ -82,7 +86,7 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage }: Po
                         <View style={styles.header}>
                             <IconButton style={styles.backButton} icon="chevron-left" onPress={handleClose} size={35} />
                         </View>
-                        <PostFullViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} focusPostIndex={focusPostIndex} />
+                        <PostFullViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} focusPostIndex={focusPostIndex} refreshing={refreshing} onRefresh={onRefresh} />
                     </Surface>
                 </Animated.View>
             </Portal>
