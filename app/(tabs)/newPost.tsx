@@ -27,7 +27,7 @@ export default function NewPost() {
     const user = useSelector(selectProfile)
     const queryClient = useQueryClient()
     const route = useRoute()
-    const loadingRef = useRef({loading: false})
+    const loadingRef = useRef({ loading: false })
 
     useFocusEffect(useCallback(() => {
         return reset
@@ -60,13 +60,13 @@ export default function NewPost() {
 
     function reset() {
         setVideoPlaying(false)
-        
+
         if (loadingRef.current.loading) return;
-        
+
         setContent("")
         player.current?.unloadAsync()
         player.current?.setPositionAsync(0)
-        
+
         setFile({
             uri: undefined,
             size: 0,
@@ -100,7 +100,7 @@ export default function NewPost() {
             setLoading(false)
             return;
         }
-        
+
         setFile({
             uri,
             size: fileSize,
@@ -130,7 +130,7 @@ export default function NewPost() {
 
             interval = setInterval(async () => {
                 const status = await getPostStatus(post.id)
-                
+
                 if (status === PostDataDtoPostStatusEnum.Inprogress) {
                     return
                 } else if (status === PostDataDtoPostStatusEnum.Failed) {
@@ -181,15 +181,15 @@ export default function NewPost() {
                 <Text style={styles.title}>{i18n.t("newPost.newPost")}</Text>
             </View>
             <View style={styles.content}>
-                <View style={styles.imageContainer}>
-                    {
-                        file.uri && file.postType === PostDataDtoPostTypeEnum.Image && <Image
-                            source={{ uri: file.uri }}
-                            style={{ height: "100%", aspectRatio: 1, backgroundColor: "black" }}
-                            resizeMode="cover"
-                        />
-                    }
-                    <TouchableWithoutFeedback onPress={togglePauseVideo} delayLongPress={800} >
+                <TouchableWithoutFeedback style={{ flex: 1 }} onPress={togglePauseVideo} delayLongPress={800} >
+                    <View style={styles.imageContainer}>
+                        {
+                            file.uri && file.postType === PostDataDtoPostTypeEnum.Image && <Image
+                                source={{ uri: file.uri }}
+                                style={{ height: "100%", aspectRatio: 1, backgroundColor: "black" }}
+                                resizeMode="cover"
+                            />
+                        }
                         <Video
                             ref={player}
                             style={{ height: file.uri && file.postType === PostDataDtoPostTypeEnum.Video ? "100%" : 0, aspectRatio: 1, backgroundColor: "black" }}
@@ -198,8 +198,8 @@ export default function NewPost() {
                             useNativeControls={false}
                             resizeMode={ResizeMode.CONTAIN}
                         />
-                    </TouchableWithoutFeedback>
-                </View>
+                    </View>
+                </TouchableWithoutFeedback>
                 <View style={styles.buttonContainer}>
                     <Button icon="image-search" mode="contained" onPress={pickImage}
                         loading={loading} disabled={loading}
