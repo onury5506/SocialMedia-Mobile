@@ -1,6 +1,6 @@
 import { PostDataDto } from "@/api/models";
 import React, { useEffect, useMemo, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import * as VideoThumbnails from 'expo-video-thumbnails';
 
@@ -9,7 +9,7 @@ function PostImageGrid({ url }: { url: string }) {
     return (
         <Image
             source={{ uri: url }}
-            style={{ width: "33%", aspectRatio: 1, backgroundColor: theme.colors.surface }}
+            style={{...styles.content, backgroundColor: theme.colors.surface}}
             resizeMode="cover"
         />
     )
@@ -37,22 +37,26 @@ function PostVideoGrid({ url }: { url: string }) {
         generateThumbnail();
     }, []);
 
-    if(image) {
+    if (image) {
         return (
             <Image
                 source={{ uri: image }}
-                style={{ width: "33%", aspectRatio: 1, backgroundColor: theme.colors.surface }}
+                style={{...styles.content, backgroundColor: theme.colors.surface}}
                 resizeMode="cover"
             />
         )
     }
 
     return (
-        <View style={{ width: "33%", aspectRatio: 1, backgroundColor: theme.colors.surface }}></View>
+        <View style={{...styles.content, backgroundColor: theme.colors.surface}}></View>
     )
 }
 
-export default function PostGrid({ url, postType }: PostDataDto) {
+export interface PostGridProps extends PostDataDto {
+    onPress?: (id: string) => void;
+}
+
+export default function PostGrid({ id, url, postType, onPress }: PostGridProps) {
     const component = useMemo(() => {
         if (postType === 'image') {
             return <PostImageGrid url={url} />
@@ -62,9 +66,26 @@ export default function PostGrid({ url, postType }: PostDataDto) {
         return null
     }, [postType])
 
-    return component
+    function handlePress() {
+        if (onPress) {
+            onPress(id)
+        }
+    }
+
+    return (
+        <TouchableOpacity style={styles.container} onPress={handlePress}>
+            {component}
+        </TouchableOpacity>
+    )
 }
 
 const styles = StyleSheet.create({
-
+    container: {
+        width: "33%",
+        aspectRatio: 1,
+    },
+    content: {
+        flex: 1,
+        width: "100%",
+    }
 })
