@@ -33,7 +33,7 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
     }, [focusPostIndex])
 
     useEffect(() => {
-        if (refreshing) {
+        if (refreshing && posts.length > 0) {
             listRef.current?.scrollToIndex({ index: 0, animated: true })
         }
     }, [refreshing])

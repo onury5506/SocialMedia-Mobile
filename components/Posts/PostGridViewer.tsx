@@ -4,9 +4,10 @@ import PostGrid from "./PostGrid";
 import { IconButton, Portal, Surface } from "react-native-paper";
 import PostFullViewer from "./PostFullViewer";
 import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setVideo } from "@/slices/activeVideoSlice";
+import { useFocusEffect } from "expo-router";
 
 export interface PostGridViewerProps {
     posts: PostDataWithWriterDto[];
@@ -27,8 +28,14 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
         }
     })
 
+    useFocusEffect(useCallback(() => {
+        return () => {
+            handleClose()
+        }
+    }, []))
+
     useEffect(() => {
-        if(refreshing) {
+        if(refreshing && posts.length > 0) {
             listRef.current?.scrollToIndex({ index: 0, animated: true })
         }
     }, [refreshing])
