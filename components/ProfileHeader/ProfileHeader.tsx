@@ -14,6 +14,7 @@ import { useState } from "react";
 import Followers from "./components/Followers";
 import { me } from "@/api/user.api";
 import Followings from "./components/Followings";
+import InteractWithOtherUser from "./components/InteractWithOtherUser/InteractWithOtherUser";
 
 export interface ProfileHeaderProps {
     profile: UserProfileDTO | UserProfileWithRelationDTO;
@@ -40,6 +41,8 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
         }
     }
 
+    let isThereNoBlock = !((profile as UserProfileWithRelationDTO)?.blockStatus?.user1BlockedUser2 || (profile as UserProfileWithRelationDTO)?.blockStatus?.user2BlockedUser1)
+
     return (
         <Surface style={{ width: "100%" }}>
             <TopBar username={profile.username} />
@@ -52,11 +55,12 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                     <Text style={styles.boldText}>{profile.name}</Text>
                 </View>
                 <ProfileInfo text={i18n.t("profile.posts")} value={profile.postCount} />
-                <ProfileInfo text={i18n.t("profile.followers")} value={profile.followerCount} onPress={()=>{setShowFollowers(true)}} />
-                <ProfileInfo text={i18n.t("profile.following")} value={profile.followingCount} onPress={()=>{setShowFollowings(true)}} />
+                <ProfileInfo text={i18n.t("profile.followers")} value={profile.followerCount} onPress={()=>{isThereNoBlock && setShowFollowers(true)}} />
+                <ProfileInfo text={i18n.t("profile.following")} value={profile.followingCount} onPress={()=>{isThereNoBlock && setShowFollowings(true)}} />
             </View>
             <About about={getTranslation(profile.about)} />
             {ownProfile && <EditProfileButton />}
+            {!ownProfile && <InteractWithOtherUser {...profile as UserProfileWithRelationDTO}/>}
             <Followers visible={showFollowers} onClose={handelOnFollowersClose} userId={profile.id} />
             <Followings visible={showFollowings} onClose={handelOnFollowingsClose} userId={profile.id} />
             <Divider style={styles.divider} />
