@@ -11,10 +11,11 @@ import { i18n, languageTag } from "@/locales/locales";
 import { readableNumber } from "@/helpers/readableNumber";
 import { likePost, unlikePost } from "@/api/post.api";
 import { getTranslation } from "@/locales/getTranslation";
+import VisitUser from "../VisitUser";
 
 let timer: any = null;
 const TIMEOUT = 500
-const debounce = (onDouble: () => void, onSingle= ()=>{}) => {
+const debounce = (onDouble: () => void, onSingle = () => { }) => {
     if (timer) {
         clearTimeout(timer);
         timer = null;
@@ -121,7 +122,7 @@ function PostVideoFull({ id, url, ratio, blurHash, onDoubleTap }: PostDataWithDo
     }
 
     return (
-        <TouchableWithoutFeedback onLongPress={onLongPress} onPress={()=>debounce(onDoubleTap, onPress)}>
+        <TouchableWithoutFeedback onLongPress={onLongPress} onPress={() => debounce(onDoubleTap, onPress)}>
             <Surface style={style}>
                 <Video
                     ref={player}
@@ -172,7 +173,7 @@ export default function PostFull(post: PostDataWithWriterDto) {
     }, [postType])
 
     function onDoubleTap() {
-        if(liked) return
+        if (liked) return
         toggleLike()
     }
 
@@ -202,13 +203,18 @@ export default function PostFull(post: PostDataWithWriterDto) {
     return (
         <View style={styles.postContainer}>
             <View style={styles.writer}>
-                <Image
-                    source={writer.profilePicture ? writer.profilePicture : require("@/assets/images/noProfilePicture.png")}
-                    style={styles.writerPP}
-                    contentFit="fill"
-                    placeholder={{ blurhash: writer.profilePictureBlurhash }}
-                />
-                <Text style={styles.writerUsername}>{writer.username}</Text>
+                <VisitUser {...writer}>
+                    <Image
+                        source={writer.profilePicture ? writer.profilePicture : require("@/assets/images/noProfilePicture.png")}
+                        style={styles.writerPP}
+                        contentFit="fill"
+                        placeholder={{ blurhash: writer.profilePictureBlurhash }}
+                    />
+                </VisitUser>
+                <VisitUser {...writer}>
+                    <Text style={styles.writerUsername}>{writer.username}</Text>
+                </VisitUser>
+
                 <Text style={styles.publishedAt}>{formatPublishedDate(publishedAt)}</Text>
             </View>
             {component}
@@ -267,7 +273,8 @@ const styles = StyleSheet.create({
     writer: {
         padding: 10,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        gap: 10
     },
     writerPP: {
         width: 40,
@@ -275,7 +282,6 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     writerUsername: {
-        marginLeft: 10,
         fontSize: 18,
     },
     writerUsernameBeforeText: {
