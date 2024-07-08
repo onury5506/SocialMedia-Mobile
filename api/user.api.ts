@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FollowUserDTO, MiniUserProfile, RegisterResponseDTO, RegisterUserDTO, UpdateUserDTO, UpdateUserProfilePictureDTO, UserProfileDTO } from "./models";
+import { BlockUserDTO, FollowUserDTO, MiniUserProfile, RegisterResponseDTO, RegisterUserDTO, UnblockUserDTO, UpdateUserDTO, UpdateUserProfilePictureDTO, UserProfileDTO, UserProfileWithRelationDTO } from "./models";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
 import store from "@/store/store";
@@ -106,6 +106,36 @@ export function unfollow(userId: string): Promise<void> {
     }
     return api.post(`${baseUrl}/unfollow`, data).then(() => {
         return;
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function block(userId: string): Promise<void> {
+    const data: BlockUserDTO = {
+        id: userId
+    }
+    return api.post(`${baseUrl}/block`, data).then(() => {
+        return;
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function unblock(userId: string): Promise<void> {
+    const data: UnblockUserDTO = {
+        id: userId
+    }
+    return api.post(`${baseUrl}/unblock`, data).then(() => {
+        return;
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function getProfile(userId: string): Promise<UserProfileWithRelationDTO> {
+    return api.get(`${baseUrl}/profile/${userId}`).then((res) => {
+        return res.data
     }).catch(err => {
         throw err?.response?.data
     })
