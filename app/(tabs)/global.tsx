@@ -4,7 +4,7 @@ import PostGridViewer from "@/components/Posts/PostGridViewer";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigation } from "expo-router";
 import { useRef, useState, useEffect } from "react";
-import { Surface } from "react-native-paper";
+import { Portal, Surface } from "react-native-paper";
 
 export default function Global() {
     const idListRef = useRef<any>({})
@@ -75,7 +75,9 @@ export default function Global() {
 
     return (
         <Surface style={{ width: "100%", flex: 1 }}>
-            <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh}  />
+            <Portal.Host >
+                <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh} />
+            </Portal.Host>
         </Surface>
     );
 }
