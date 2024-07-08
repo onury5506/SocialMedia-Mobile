@@ -69,6 +69,14 @@
         "writeSomething": "Write something...",
         "postShared": "Post shared."
     },
+    "interactWithOtherProfiles":{
+        "follow": "Follow",
+        "followYou": "Follow you",
+        "followYouToo": "Follow you too",
+        "unfollow": "Unfollow",
+        "block": "Block",
+        "unblock": "Unblock"
+    },
     "somethingWentWrong": "Something went wrong. Please try again.",
     "follow": "Follow",
     "unfollow": "Unfollow",

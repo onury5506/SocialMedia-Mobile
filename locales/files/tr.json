@@ -69,6 +69,14 @@
         "writeSomething": "Bir şeyler yazın...",
         "postShared": "Gönderi paylaşıldı."
     },
+    "interactWithOtherProfiles":{
+        "follow": "Takip et",
+        "followYou": "Seni takip ediyor",
+        "followYouToo": "Sen de takip et",
+        "unfollow": "Takibi bırak",
+        "block": "Engelle",
+        "unblock": "Engeli kaldır"
+    },
     "somethingWentWrong": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin.",
     "follow": "Takip Et",
     "unfollow": "Takibi Bırak",
