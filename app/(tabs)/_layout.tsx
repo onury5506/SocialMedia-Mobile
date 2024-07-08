@@ -60,16 +60,23 @@ export default function TabLayout() {
                 borderColor: focused ? theme.colors.primary : theme.colors.surface,
                 borderRadius: 100,
               }}>
-                <Avatar.Image size={24} source={{uri:profile.profilePicture}} />
+                <Avatar.Image size={24} source={{ uri: profile.profilePicture }} />
               </View>
-              
+
             ) : (
               <Avatar.Icon size={28} icon="account" style={{
                 borderWidth: 1,
                 backgroundColor: focused ? theme.colors.primary : theme.colors.surface,
-              }}/>
+              }} />
             )
           ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="[user]"
+        options={{
+          href: null
         }}
       />
     </Tabs>
