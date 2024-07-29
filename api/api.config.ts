@@ -2,7 +2,7 @@ import { selectAuth } from "@/slices/userSlice";
 import store from "@/store/store";
 import axios from "axios"
 
-export const baseUrl = "http://192.168.1.108:3000"
+export const baseUrl = "http://192.168.1.109:3000"
 
 export const api = axios.create({
     baseURL: baseUrl
