@@ -32,6 +32,14 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
         }
     }, [focusPostIndex])
 
+    function onScrollToIndexFailed(e:any) {
+        const offset = e.averageItemLength * e.index
+        listRef.current?.scrollToOffset({ offset, animated: true })
+        setTimeout(() => {
+            listRef.current?.scrollToIndex({ index: e.index, animated: true })
+        }, 100)
+    }
+
     useEffect(() => {
         if (refreshing && posts.length > 0) {
             listRef.current?.scrollToIndex({ index: 0, animated: true })
@@ -60,7 +68,8 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
                     itemVisiblePercentThreshold: 80
                 }}
                 onViewableItemsChanged={onViewableItemsChanged}
-                onScrollToIndexFailed={console.log}
+                onScrollToIndexFailed={onScrollToIndexFailed}
+                initialScrollIndex={focusPostIndex}
                 onRefresh={onRefresh}
                 refreshing={!!refreshing}
             />
