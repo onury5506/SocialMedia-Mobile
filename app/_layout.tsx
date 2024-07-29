@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import store from '@/store/store';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
+import { Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
 
 const darkTheme = {
   ...MD2DarkTheme,
@@ -52,20 +53,24 @@ export default function RootLayout() {
     <Provider store={store}>
       <PaperProvider theme={theme}>
         <SafeAreaProvider>
-          <QueryClientProvider client={queryClient}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
-              <AlertNotificationRoot>
-                <Portal.Host>
-                  <Stack>
-                    <Stack.Screen name="index" options={{ headerShown: false }} />
-                    <Stack.Screen name="register" options={{ headerShown: false }} />
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                </Portal.Host>
-              </AlertNotificationRoot>
-            </SafeAreaView>
-          </QueryClientProvider>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ width: "100%", flex: 1, backgroundColor: "white" }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1, width: "100%", backgroundColor: "yellow" }}>
+              <QueryClientProvider client={queryClient}>
+                <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
+                  <AlertNotificationRoot>
+                    <Portal.Host>
+                      <Stack>
+                        <Stack.Screen name="index" options={{ headerShown: false }} />
+                        <Stack.Screen name="register" options={{ headerShown: false }} />
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        <Stack.Screen name="+not-found" />
+                      </Stack>
+                    </Portal.Host>
+                  </AlertNotificationRoot>
+                </SafeAreaView>
+              </QueryClientProvider>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
         </SafeAreaProvider>
       </PaperProvider>
     </Provider>
