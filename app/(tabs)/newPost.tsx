@@ -1,5 +1,5 @@
 import { Button, IconButton, Surface, Text, TextInput } from "react-native-paper";
-import { StyleSheet, View, Image, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
 import { i18n } from "@/locales/locales";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -112,6 +112,7 @@ export default function NewPost() {
 
 
     function togglePauseVideo() {
+        Keyboard.dismiss()
         setVideoPlaying(!videoPlaying)
     }
 
@@ -171,7 +172,6 @@ export default function NewPost() {
             })
         }
     }
-
     return (
         <Surface style={styles.container}>
             <View style={styles.header}>
@@ -179,7 +179,7 @@ export default function NewPost() {
                 <Text style={styles.title}>{i18n.t("newPost.newPost")}</Text>
             </View>
             <View style={styles.content}>
-                <TouchableWithoutFeedback style={{ flex: 1 }} onPress={togglePauseVideo} delayLongPress={800} >
+                <TouchableWithoutFeedback onPress={togglePauseVideo} delayLongPress={800} >
                     <View style={styles.imageContainer}>
                         {
                             file.uri && file.postType === PostDataDtoPostTypeEnum.Image && <Image
@@ -213,7 +213,7 @@ export default function NewPost() {
                     }
                 </View>
 
-                <View style={{ height: "30%", width: "100%", alignItems: "center" }}>
+                <View style={{ flex: 1, maxHeight: "30%", width: "100%", alignItems: "center", marginTop: 10 }}>
                     <TextInput
                         label={i18n.t("newPost.writeSomething")}
                         mode="outlined"
@@ -221,7 +221,7 @@ export default function NewPost() {
                         value={content}
                         onChangeText={setContent}
                         maxLength={240}
-                        style={{ width: "90%", flex: 1, marginTop: 10 }}
+                        style={{ width: "90%", flex: 1 }}
                         disabled={loading}
                     />
                 </View>
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
     header: {
         width: "100%",
@@ -256,7 +256,8 @@ const styles = StyleSheet.create({
         top: -8
     },
     imageContainer: {
-        height: "50%",
+        flex: 1,
+        maxHeight: "50%",
         width: "100%",
         alignItems: "center",
         marginBottom: 10
@@ -265,6 +266,6 @@ const styles = StyleSheet.create({
         width: "90%",
         flexDirection: "row",
         justifyContent: "space-around",
-        alignItems: "center"
+        alignItems: "center",
     }
 });
