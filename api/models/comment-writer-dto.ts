@@ -42,5 +42,11 @@ export interface CommentWriterDto {
      * @type {string}
      * @memberof CommentWriterDto
      */
+    profilePictureBlurhash: string;
+
+    /**
+     * @type {string}
+     * @memberof CommentWriterDto
+     */
     name: string;
 }
