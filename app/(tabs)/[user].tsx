@@ -1,8 +1,8 @@
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
-import { Surface, Text, Portal, ActivityIndicator } from "react-native-paper"
+import { router, useGlobalSearchParams, useLocalSearchParams } from "expo-router"
+import { Surface, Portal, ActivityIndicator } from "react-native-paper"
 import { StyleSheet, View } from 'react-native';
 import { VisitUserProps } from "@/components/VisitUser";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PostDataWithWriterDto, UserProfileWithRelationDTO } from "@/api/models";
 import { getProfile } from "@/api/user.api";
 import LoadingProfileHeader from "@/components/ProfileHeader/LoadingProfileHeader";
@@ -11,12 +11,11 @@ import EventEmitter from "events";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getPostsOfUser } from "@/api/post.api";
 import PostGridViewer from "@/components/Posts/PostGridViewer";
-import { set } from "react-hook-form";
 
 export const profilePageEvenEmitter = new EventEmitter();
 
 export default function UserProfile() {
-    const params = useLocalSearchParams() as any as VisitUserProps
+    const params = useGlobalSearchParams() as any as VisitUserProps
     const idListRef = useRef<any>({})
     const [posts, setPosts] = useState<PostDataWithWriterDto[]>([])
     const [profile, setProfile] = useState<UserProfileWithRelationDTO | null>(null)
@@ -30,9 +29,11 @@ export default function UserProfile() {
     })
     const queryClient = useQueryClient()
 
-    console.log(data)
+    useEffect(() => {
+        if(!params?.id) {
+            return;
+        }
 
-    useFocusEffect(useCallback(() => {
         getProfile(params.id).then(setProfile).catch(() => {
             router.back()
         })
@@ -45,7 +46,7 @@ export default function UserProfile() {
             setPosts([])
             profilePageEvenEmitter.removeListener('profileUpdated', onProfileUpdated)
         }
-    }, []))
+    }, [params])
 
     useEffect(() => {
         if (data) {
