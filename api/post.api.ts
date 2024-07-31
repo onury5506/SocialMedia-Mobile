@@ -1,4 +1,4 @@
-import { CreatePostRequestDto, CreatePostResponseDto, PostDataDtoPostStatusEnum, PostDataWithWriterDto, PostLikeDto, PostUnlikeDto } from "./models";
+import { CommentDataWithLikedDto, CreatePostRequestDto, CreatePostResponseDto, PostDataDtoPostStatusEnum, PostDataWithWriterDto, PostLikeDto, PostUnlikeDto } from "./models";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
 import { PaginatedDto } from "./paginated.dto";
@@ -63,6 +63,47 @@ export function unlikePost(postId: string): Promise<void> {
         postId
     }
     return api.post<void>(`${baseUrl}/unlike`,postData).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function getComments( postId: string, page: number): Promise<PaginatedDto<CommentDataWithLikedDto>> {
+    return api.get<PaginatedDto<CommentDataWithLikedDto>>(`${baseUrl}/comments/${postId}/${page}`).then(res => {
+        return res.data
+    }).catch(err => {
+        console.log(err)
+        throw err?.response?.data
+    })
+}
+
+export function createComment(postId: string, content: string): Promise<CommentDataWithLikedDto> {
+    return api.post<CommentDataWithLikedDto>(`${baseUrl}/comment`, { postId, content }).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function likeComment(commentId: string): Promise<void> {
+    return api.post<void>(`${baseUrl}/comment/like`, { commentId }).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function unlikeComment(commentId: string): Promise<void> {
+    return api.post<void>(`${baseUrl}/comment/unlike`, { commentId }).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function deleteComment(commentId: string): Promise<void> {
+    return api.delete<void>(`${baseUrl}/comment/${commentId}`).then(res => {
         return res.data
     }).catch(err => {
         throw err?.response?.data
