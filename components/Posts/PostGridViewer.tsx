@@ -15,9 +15,10 @@ export interface PostGridViewerProps {
     fetchNextPage: () => void;
     refreshing?: boolean;
     onRefresh?: () => void;
+    deletePost?: (id: string) => void;
 }
 
-export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRefresh, refreshing }: PostGridViewerProps) {
+export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRefresh, refreshing, deletePost }: PostGridViewerProps) {
     const listRef = useRef<FlatList<PostDataWithWriterDto>>(null)
     const dispatch = useDispatch()
     const translateX = useSharedValue(Dimensions.get('window').width);
@@ -27,6 +28,7 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
             transform: [{ translateX: translateX.value }]
         }
     })
+    const [isDeleted, setIsDeleted] = useState(false)
 
     useFocusEffect(useCallback(() => {
         return () => {
@@ -35,7 +37,7 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
     }, []))
 
     useEffect(() => {
-        if(refreshing && posts.length > 0) {
+        if (refreshing && posts.length > 0) {
             listRef.current?.scrollToIndex({ index: 0, animated: true })
         }
     }, [refreshing])
@@ -83,6 +85,10 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
         dispatch(setVideo(undefined))
     }
 
+    if (isDeleted) {
+        return null
+    }
+
     return (
         <>
             <FlatList
@@ -104,7 +110,15 @@ export default function PostGridViewer({ posts, hasNextPage, fetchNextPage, onRe
                         <View style={styles.header}>
                             <IconButton style={styles.backButton} icon="chevron-left" onPress={handleClose} size={35} />
                         </View>
-                        <PostFullViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} focusPostIndex={focusPostIndex} refreshing={refreshing} onRefresh={onRefresh} />
+                        <PostFullViewer
+                            posts={posts}
+                            hasNextPage={hasNextPage}
+                            fetchNextPage={fetchNextPage}
+                            focusPostIndex={focusPostIndex}
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            deletePost={deletePost}
+                        />
                     </Surface>
                 </Animated.View>
             </Portal>

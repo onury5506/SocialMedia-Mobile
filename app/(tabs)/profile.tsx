@@ -1,5 +1,5 @@
 import { PostDataDto, PostDataWithWriterDto } from '@/api/models';
-import { getPostsOfUser } from '@/api/post.api';
+import { deletePost, getPostsOfUser } from '@/api/post.api';
 import { me } from '@/api/user.api';
 import PostGridViewer from '@/components/Posts/PostGridViewer';
 import ProfileHeader from '@/components/ProfileHeader/ProfileHeader';
@@ -75,6 +75,26 @@ export default function ProfileScreen() {
     me().catch(err => { })
   }, []))
 
+  function handleDeletePost(id: string) {
+    const index = posts.findIndex(post => post.id === id)
+
+    if (index === -1) {
+      return
+    }
+
+    setPosts((prev)=>{
+      prev.splice(index, 1)
+      return [...prev]
+    })
+
+    deletePost(id).catch(err => {
+      setPosts((prev)=>{
+        prev.splice(index, 0, posts[index])
+        return [...prev]
+      })
+    })
+  }
+
   if (user === undefined) {
     return <Surface style={styles.container} children={null} />
   }
@@ -83,7 +103,7 @@ export default function ProfileScreen() {
     <Portal.Host>
       <Surface style={styles.container} >
         <ProfileHeader profile={user} />
-        <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh} />
+        <PostGridViewer posts={posts} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} refreshing={refreshing} onRefresh={refresh} deletePost={handleDeletePost} />
       </Surface>
     </Portal.Host>
   );

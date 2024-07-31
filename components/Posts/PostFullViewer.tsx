@@ -15,9 +15,10 @@ export interface PostFullViewerProps {
     fetchNextPage: () => void;
     onRefresh?: () => void;
     refreshing?: boolean;
+    deletePost?: (id: string) => void;
 }
 
-export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focusPostIndex, onRefresh, refreshing }: PostFullViewerProps) {
+export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focusPostIndex, onRefresh, refreshing, deletePost }: PostFullViewerProps) {
     const dispatch = useDispatch()
     const listRef = useRef<FlatList<PostDataWithWriterDto>>(null)
     const [selectedCommentsOfPost, setSelectedCommentsOfPost] = useState<string | undefined>(undefined)
@@ -83,7 +84,7 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
                 ref={listRef}
                 data={posts}
                 keyExtractor={item => item.id}
-                renderItem={({ item }) => <PostFull {...item} onClickComments={onClickPostCommentButton} />}
+                renderItem={({ item }) => <PostFull {...item} onClickComments={onClickPostCommentButton} deletePost={deletePost} />}
                 style={styles.fullList}
                 ItemSeparatorComponent={() => <Divider style={{ marginTop: 10 }} />}
                 onEndReached={(thresh) => hasNextPage && fetchNextPage()}

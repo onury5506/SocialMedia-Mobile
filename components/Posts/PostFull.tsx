@@ -1,7 +1,7 @@
 import { PostDataWithWriterDto } from "@/api/models";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, StyleSheet, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
-import { Surface, useTheme, Text, IconButton } from "react-native-paper";
+import { Surface, useTheme, Text, IconButton, Portal, Dialog, Button } from "react-native-paper";
 import { Image, ImageStyle } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import { useDispatch, useSelector } from "react-redux";
@@ -35,8 +35,6 @@ interface PostDataWithDoubleClick extends PostDataWithWriterDto {
 
 function PostImageFull({ url, ratio, blurHash, onDoubleTap }: PostDataWithDoubleClick) {
     const theme = useTheme()
-
-
     return (
         <TouchableWithoutFeedback onPress={() => debounce(onDoubleTap)}>
             <View style={{ width: "100%" }}>
@@ -148,7 +146,8 @@ function PostVideoFull({ id, url, ratio, blurHash, onDoubleTap }: PostDataWithDo
 }
 
 export interface PostFullProps extends PostDataWithWriterDto {
-    onClickComments: (id: string) => void
+    onClickComments: (id: string) => void,
+    deletePost?: (id: string) => void
 }
 
 function formatPublishedDate(date: Date) {
@@ -163,6 +162,7 @@ export default function PostFull(post: PostFullProps) {
     const [liked, setLiked] = useState(post.liked)
     const [showMore, setShowMore] = useState(false)
     const { publishedAt, postType, writer, comments } = post
+    const [showMenu, setShowMenu] = useState(false)
 
     const component = useMemo(() => {
         if (postType === 'image') {
@@ -186,6 +186,22 @@ export default function PostFull(post: PostFullProps) {
             setLiked(true)
             likePost(post.id).catch()
         }
+    }
+
+    function handleShowMenu() {
+        setShowMenu(true)
+    }
+
+    function handleHideMenu() {
+        setShowMenu(false)
+    }
+
+    function handleDelete() {
+        if(!post.deletePost){
+            return
+        }
+
+        post.deletePost(post.id)
     }
 
     let likes = post.likes
@@ -216,7 +232,17 @@ export default function PostFull(post: PostFullProps) {
                     <Text style={styles.writerUsername}>{writer.username}</Text>
                 </VisitUser>
 
-                <Text style={styles.publishedAt}>{formatPublishedDate(publishedAt)}</Text>
+                <View style={styles.publishedAt}>
+                    <Text>{formatPublishedDate(publishedAt)}</Text>
+                    {
+                        post.deletePost && (
+                            <IconButton
+                                icon="dots-vertical"
+                                onPress={handleShowMenu}
+                            />
+                        )
+                    }
+                </View>
             </View>
             {component}
             <View style={styles.icons}>
@@ -234,7 +260,7 @@ export default function PostFull(post: PostFullProps) {
                         icon={"comment-outline"}
                         iconColor={theme.colors.onSurface}
                         size={20}
-                        onPress={()=>post.onClickComments(post.id)}
+                        onPress={() => post.onClickComments(post.id)}
                     />
                     {/*<Text style={styles.counterText}>{comments}</Text>*/}
                 </View>
@@ -256,6 +282,18 @@ export default function PostFull(post: PostFullProps) {
                     </Text>
                 </View>
             }
+            <Portal>
+                <Dialog visible={showMenu} onDismiss={() => handleHideMenu()}>
+                    <Dialog.Content>
+                        <Button icon={"delete"} onPress={handleDelete}>
+                            Delete
+                        </Button>
+                        <Button icon={"cancel"} onPress={() => handleHideMenu()}>
+                            Cancel
+                        </Button>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
         </View>
     )
 }
@@ -291,7 +329,9 @@ const styles = StyleSheet.create({
     },
     publishedAt: {
         position: "absolute",
-        right: 10
+        right: 10,
+        flexDirection: "row",
+        alignItems: "center",
     },
     icons: {
         flexDirection: "row",
