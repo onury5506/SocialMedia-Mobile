@@ -120,7 +120,8 @@ export default function Comments({ selectedPostId, handleClose }: CommentsProps)
         let index = comments.findIndex((comment) => comment.id === id)
 
         setComments((prev) => {
-            return prev.filter((comment) => comment.id !== id)
+            prev.splice(index, 1)
+            return [...prev]
         })
 
         deleteComment(id).catch(() => {
@@ -129,7 +130,7 @@ export default function Comments({ selectedPostId, handleClose }: CommentsProps)
             }
             setComments((prev) => {
                 prev.splice(index, 0, comments[index])
-                return prev
+                return [...prev]
             })
         })
     }
