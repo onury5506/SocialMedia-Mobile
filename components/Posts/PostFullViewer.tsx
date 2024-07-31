@@ -1,11 +1,12 @@
 import { PostDataWithWriterDto, PostDataWithWriterDtoPostTypeEnum } from "@/api/models";
-import { FlatList, StyleSheet, View, Image, ViewToken } from 'react-native';
+import { FlatList, StyleSheet, View, Image, ViewToken, BackHandler } from 'react-native';
 import PostFull from "./PostFull";
-import { Divider, Surface } from "react-native-paper";
+import { Divider, Portal, Surface, Text } from "react-native-paper";
 import { setVideo } from "@/slices/activeVideoSlice";
 import { useDispatch } from "react-redux";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Comments from "./Comments/Comments";
 
 export interface PostFullViewerProps {
     posts: PostDataWithWriterDto[];
@@ -19,9 +20,21 @@ export interface PostFullViewerProps {
 export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focusPostIndex, onRefresh, refreshing }: PostFullViewerProps) {
     const dispatch = useDispatch()
     const listRef = useRef<FlatList<PostDataWithWriterDto>>(null)
+    const [selectedCommentsOfPost, setSelectedCommentsOfPost] = useState<string | undefined>(undefined)
+    const focusedRef = useRef(false)
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleCloseComments);
+
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleCloseComments);
+        }
+    })
 
     useFocusEffect(useCallback(() => {
+        focusedRef.current = true
         return () => {
+            focusedRef.current = false
             dispatch(setVideo(undefined))
         }
     }, []))
@@ -32,19 +45,19 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
         }
     }, [focusPostIndex])
 
-    function onScrollToIndexFailed(e:any) {
+    useEffect(() => {
+        if (refreshing && posts.length > 0) {
+            listRef.current?.scrollToIndex({ index: 0, animated: true })
+        }
+    }, [refreshing])
+
+    function onScrollToIndexFailed(e: any) {
         const offset = e.averageItemLength * e.index
         listRef.current?.scrollToOffset({ offset, animated: true })
         setTimeout(() => {
             listRef.current?.scrollToIndex({ index: e.index, animated: true })
         }, 100)
     }
-
-    useEffect(() => {
-        if (refreshing && posts.length > 0) {
-            listRef.current?.scrollToIndex({ index: 0, animated: true })
-        }
-    }, [refreshing])
 
     function onViewableItemsChanged({ viewableItems, changed }: {
         viewableItems: ViewToken<PostDataWithWriterDto>[];
@@ -54,15 +67,25 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
         dispatch(setVideo(firstVideo?.item?.id))
     }
 
+    function onClickPostCommentButton(postId: string) {
+        setSelectedCommentsOfPost(postId)
+    }
+
+    function handleCloseComments() {
+        if (!selectedCommentsOfPost || !focusedRef.current) return false
+        setSelectedCommentsOfPost(undefined)
+        return true
+    }
+
     return (
         <Surface style={styles.container}>
             <FlatList
                 ref={listRef}
                 data={posts}
                 keyExtractor={item => item.id}
-                renderItem={({ item }) => <PostFull {...item} />}
+                renderItem={({ item }) => <PostFull {...item} onClickComments={onClickPostCommentButton} />}
                 style={styles.fullList}
-                ItemSeparatorComponent={() => <Divider style={{marginTop:10}} />}
+                ItemSeparatorComponent={() => <Divider style={{ marginTop: 10 }} />}
                 onEndReached={(thresh) => hasNextPage && fetchNextPage()}
                 viewabilityConfig={{
                     itemVisiblePercentThreshold: 80
@@ -73,6 +96,7 @@ export default function PostFullViewer({ posts, hasNextPage, fetchNextPage, focu
                 onRefresh={onRefresh}
                 refreshing={!!refreshing}
             />
+            <Comments selectedPostId={selectedCommentsOfPost} handleClose={()=>setSelectedCommentsOfPost(undefined)}/>
         </Surface>
     )
 }

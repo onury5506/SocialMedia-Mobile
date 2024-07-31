@@ -77,6 +77,10 @@
         "block": "Block",
         "unblock": "Unblock"
     },
+    "post":{
+        "comments": "Comments",
+        "writeComment": "Write a comment..."
+    },
     "somethingWentWrong": "Something went wrong. Please try again.",
     "follow": "Follow",
     "unfollow": "Unfollow",

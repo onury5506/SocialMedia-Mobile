@@ -148,6 +148,7 @@ function PostVideoFull({ id, url, ratio, blurHash, onDoubleTap }: PostDataWithDo
 }
 
 export interface PostFullProps extends PostDataWithWriterDto {
+    onClickComments: (id: string) => void
 }
 
 function formatPublishedDate(date: Date) {
@@ -157,7 +158,7 @@ function formatPublishedDate(date: Date) {
     return _date.toLocaleDateString(languageTag, { year: isSameYear ? undefined : 'numeric', month: 'short', day: 'numeric' })
 }
 
-export default function PostFull(post: PostDataWithWriterDto) {
+export default function PostFull(post: PostFullProps) {
     const theme = useTheme()
     const [liked, setLiked] = useState(post.liked)
     const [showMore, setShowMore] = useState(false)
@@ -233,6 +234,7 @@ export default function PostFull(post: PostDataWithWriterDto) {
                         icon={"comment-outline"}
                         iconColor={theme.colors.onSurface}
                         size={20}
+                        onPress={()=>post.onClickComments(post.id)}
                     />
                     {/*<Text style={styles.counterText}>{comments}</Text>*/}
                 </View>

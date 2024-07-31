@@ -77,6 +77,10 @@
         "block": "Engelle",
         "unblock": "Engeli kaldır"
     },
+    "post":{
+        "comments": "Yorumlar",
+        "writeComment": "Bir yorum yazın..."
+    },
     "somethingWentWrong": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin.",
     "follow": "Takip Et",
     "unfollow": "Takibi Bırak",
