@@ -138,10 +138,10 @@ export default function Comment({
                         <Divider />
                         <View style={styles.menuButtonGroup}>
                             <Button icon={"delete"} onPress={handleDelete}>
-                                Delete
+                                {i18n.t("delete")}
                             </Button>
                             <Button icon={"cancel"} mode="contained" onPress={handleCancel}>
-                                Cancel
+                                {i18n.t("cancel")}
                             </Button>
                         </View>
                     </Dialog>

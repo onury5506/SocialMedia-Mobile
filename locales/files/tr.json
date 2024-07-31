@@ -84,5 +84,7 @@
     "somethingWentWrong": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin.",
     "follow": "Takip Et",
     "unfollow": "Takibi Bırak",
-    "showMore": "devamı..."
+    "showMore": "devamı...",
+    "delete": "Sil",
+    "cancel": "İptal"
 }

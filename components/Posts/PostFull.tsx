@@ -197,7 +197,7 @@ export default function PostFull(post: PostFullProps) {
     }
 
     function handleDelete() {
-        if(!post.deletePost){
+        if (!post.deletePost) {
             return
         }
 
@@ -286,10 +286,10 @@ export default function PostFull(post: PostFullProps) {
                 <Dialog visible={showMenu} onDismiss={() => handleHideMenu()}>
                     <Dialog.Content>
                         <Button icon={"delete"} onPress={handleDelete}>
-                            Delete
+                            {i18n.t("delete")}
                         </Button>
                         <Button icon={"cancel"} onPress={() => handleHideMenu()}>
-                            Cancel
+                            {i18n.t("cancel")}
                         </Button>
                     </Dialog.Content>
                 </Dialog>
