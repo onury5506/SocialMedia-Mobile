@@ -69,6 +69,14 @@ export function unlikePost(postId: string): Promise<void> {
     })
 }
 
+export function deletePost(postId: string): Promise<void> {
+    return api.delete<void>(`${baseUrl}/${postId}`).then(res => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
 export function getComments( postId: string, page: number): Promise<PaginatedDto<CommentDataWithLikedDto>> {
     return api.get<PaginatedDto<CommentDataWithLikedDto>>(`${baseUrl}/comments/${postId}/${page}`).then(res => {
         return res.data
