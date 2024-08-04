@@ -1,11 +1,10 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Divider, Surface, Text } from "react-native-paper";
 import { UserProfileDTO, UserProfileWithRelationDTO } from "@/api/models";
 import { i18n } from "@/locales/locales";
 import { selectProfile } from "@/slices/userSlice";
 import { useSelector } from "react-redux";
 import ProfileInfo from "./components/ProfileInfo";
-import { getLocales } from "expo-localization";
 import { getTranslation } from "@/locales/getTranslation";
 import About from "./components/About";
 import TopBar from "./components/TopBar";
@@ -15,6 +14,7 @@ import Followers from "./components/Followers";
 import { me } from "@/api/user.api";
 import Followings from "./components/Followings";
 import InteractWithOtherUser from "./components/InteractWithOtherUser/InteractWithOtherUser";
+import { Image } from "expo-image";
 
 export interface ProfileHeaderProps {
     profile: UserProfileDTO | UserProfileWithRelationDTO;
@@ -51,6 +51,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                     <Image
                         style={styles.profilePicture}
                         source={profile.profilePicture ? { uri: profile.profilePicture } : require("@/assets/images/noProfilePicture.png")}
+                        placeholder={{ blurhash: profile.profilePictureBlurhash }}
                     />
                     <Text style={styles.boldText}>{profile.name}</Text>
                 </View>
