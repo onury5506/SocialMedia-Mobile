@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { TranslateResultDto } from "./translate-result-dto";
+
  /**
  * 
  *
@@ -24,7 +26,7 @@ export interface ChatMessageDto {
      * @type {string}
      * @memberof ChatMessageDto
      */
-    id: string;
+    _id: string;
 
     /**
      * @type {string}
@@ -51,10 +53,10 @@ export interface ChatMessageDto {
     messageStatus: ChatMessageDtoMessageStatusEnum;
 
     /**
-     * @type {string}
+     * @type {TranslateResultDto}
      * @memberof ChatMessageDto
      */
-    content?: string;
+    content?: TranslateResultDto;
 
     /**
      * @type {Date}

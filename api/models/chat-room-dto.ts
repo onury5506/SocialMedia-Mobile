@@ -24,7 +24,7 @@ export interface ChatRoomDto {
      * @type {string}
      * @memberof ChatRoomDto
      */
-    id: string;
+    _id: string;
 
     /**
      * @type {Array<string>}
