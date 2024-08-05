@@ -48,6 +48,10 @@ store.subscribe(() => {
         }
 
         state = _state;
+    }else if(!auth && state.user.auth){
+        socket.disconnect();
+
+        state = _state;
     }
 });
 
