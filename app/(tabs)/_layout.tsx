@@ -28,7 +28,16 @@ export default function TabLayout() {
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="feed"
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'reader' : 'reader-outline'} color={color} />
           ),
         }}
       />
@@ -37,7 +46,7 @@ export default function TabLayout() {
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'search' : 'search-outline'} color={color} />
+            <TabBarIcon name={focused ? 'earth' : 'earth-outline'} color={color} />
           ),
         }}
       />
