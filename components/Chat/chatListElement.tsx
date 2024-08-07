@@ -5,10 +5,11 @@ import { getTranslation } from "@/locales/getTranslation";
 import { selectProfile } from "@/slices/userSlice";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Surface, Text, useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { useRouter } from "expo-router";
 
 interface ChatListElementProps extends ChatRoomDto {
     lastMessage?: ChatMessageDto
@@ -35,6 +36,7 @@ function PrivateChatListElement({
     const user = useSelector(selectProfile)
     const targetUserId = members.find(member => member !== user?.id)
     const theme = useTheme()
+    const router = useRouter();
 
     const {
         data: targetUser,
@@ -56,6 +58,10 @@ function PrivateChatListElement({
         }
     })
 
+    function navigateToChat() {
+        router.navigate(`/chat?chatRoomId=${id}&roomType=${roomType}&roomName=${encodeURIComponent(targetUser?.name || "")}&roomImagePath=${encodeURIComponent(targetUser?.profilePicture || "")}&roomImageBlurHash=${encodeURIComponent(targetUser?.profilePictureBlurhash || "")}`)
+    }
+
     if (isTargetUserFetching || isLastMessageFetching) {
         return <ChatListElementLoading />
     }
@@ -75,18 +81,20 @@ function PrivateChatListElement({
     }
 
     return (
-        <Surface style={styles.container}>
-            <Image
-                style={styles.profilePicture}
-                source={targetUser?.profilePicture ? { uri: targetUser.profilePicture } : require("@/assets/images/noProfilePicture.png")}
-                placeholder={{ blurhash: targetUser?.profilePictureBlurhash }}
-            />
-            <View style={styles.textContainer}>
-                <Text style={styles.name} >{targetUser?.name}</Text>
-                <Text>{lastMessageContent ? getTranslation(lastMessageContent) : ""}</Text>
-                <Text style={{...styles.date, color:theme.colors.primary}}>{dateText}</Text>
-            </View>
-        </Surface>
+        <TouchableOpacity onPress={navigateToChat}>
+            <Surface style={styles.container}>
+                <Image
+                    style={styles.profilePicture}
+                    source={targetUser?.profilePicture ? { uri: targetUser.profilePicture } : require("@/assets/images/noProfilePicture.png")}
+                    placeholder={{ blurhash: targetUser?.profilePictureBlurhash }}
+                />
+                <View style={styles.textContainer}>
+                    <Text style={styles.name} >{targetUser?.name}</Text>
+                    <Text>{lastMessageContent ? getTranslation(lastMessageContent) : ""}</Text>
+                    <Text style={{ ...styles.date, color: theme.colors.primary }}>{dateText}</Text>
+                </View>
+            </Surface>
+        </TouchableOpacity>
     )
 }
 
