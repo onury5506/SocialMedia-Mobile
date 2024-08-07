@@ -29,7 +29,7 @@ const lightTheme = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 export default function RootLayout() {
   const colorScheme = useColorScheme ? useColorScheme() : 'light';
