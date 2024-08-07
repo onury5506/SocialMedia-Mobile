@@ -93,6 +93,7 @@ export enum ChatMessageDtoMessageTypeEnum {
 export enum ChatMessageDtoMessageStatusEnum {
     Pending = 'pending',
     Sent = 'sent',
-    Deleted = 'deleted'
+    Deleted = 'deleted',
+    Error = 'error'
 }
 
