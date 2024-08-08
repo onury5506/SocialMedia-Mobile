@@ -83,6 +83,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="prechat"
+        options={{
+          href: null
+        }}
+      />
+      <Tabs.Screen
         name="chat"
         options={{
           href: null
