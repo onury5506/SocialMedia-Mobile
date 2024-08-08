@@ -2,15 +2,15 @@ import { getChatRoom, getChatRooms } from "@/api/chat.api";
 import { ChatMessageDto, ChatRoomDto } from "@/api/models";
 import { ChatListElement } from "@/components/Chat/chatListElement";
 import socket from "@/websocket/websocket";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
-import { Surface } from "react-native-paper";
+import { Dialog, Portal, Surface } from "react-native-paper";
+import { Image } from "expo-image";
 
 export default function Chats() {
     const idListRef = useRef<any>({})
     const [chats, setChats] = useState<ChatRoomDto[]>([]);
-    const [lastMessages, setLastMessages] = useState<{ [key: string]: ChatMessageDto }>({})
     const {
         data,
         isFetching,
@@ -22,6 +22,11 @@ export default function Chats() {
         initialPageParam: 1,
         getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined
     })
+    const queryClient = useQueryClient()
+    const [showImage, setShowImage] = useState<{
+        url: string,
+        bluredHash: string
+    } | null>(null)
 
     useEffect(() => {
         socket.on('message', (message: ChatMessageDto) => {
@@ -40,12 +45,7 @@ export default function Chats() {
                 return
             }
 
-            setLastMessages(prev => {
-                return {
-                    ...prev,
-                    [message.chatRoom]: message
-                }
-            })
+            queryClient.setQueryData([`chat:message:last:${message.chatRoom}`], message)
 
             setChats(prev => {
                 const newChats = [...prev]
@@ -53,9 +53,30 @@ export default function Chats() {
                 const chat = newChats[chatIndex]
                 newChats.splice(chatIndex, 1)
                 newChats.unshift(chat)
-
                 return newChats
             })
+
+            queryClient.setQueryData([`chatRoom:${message.chatRoom}`], (oldData: any) => {
+                if (!oldData) {
+                    return;
+                }
+
+                const newPages = oldData.pages.map((page: any, index: number) => {
+                    if (index == 0) {
+                        return {
+                            ...page,
+                            data: [message, ...page.data]
+                        }
+                    }
+                    return page
+                })
+
+                return {
+                    ...oldData,
+                    pages: newPages
+                }
+            })
+
         })
     }, [])
 
@@ -82,9 +103,18 @@ export default function Chats() {
             <FlatList
                 data={chats}
                 keyExtractor={item => item._id}
-                renderItem={({ item }) => <ChatListElement {...item} lastMessage={lastMessages[item._id]} />}
+                renderItem={({ item }) => <ChatListElement {...item} showImage={setShowImage} />}
                 onEndReached={() => hasNextPage && fetchNextPage()}
             />
+            <Portal>
+                <Dialog visible={!!showImage?.url} onDismiss={() => setShowImage(null)}>
+                    <Image
+                        style={styles.profilePicture}
+                        source={showImage?.url}
+                        placeholder={{ blurhash: showImage?.bluredHash }}
+                    />
+                </Dialog>
+            </Portal>
         </Surface>
     )
 }
@@ -92,5 +122,9 @@ export default function Chats() {
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    profilePicture: {
+        width: "100%",
+        aspectRatio: 1,
     }
 });
