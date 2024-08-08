@@ -2,6 +2,7 @@ import { UserProfileWithRelationDTO } from "@/api/models";
 import { block, follow, unblock, unfollow } from "@/api/user.api";
 import { profilePageEvenEmitter } from "@/app/(tabs)/[user]";
 import { i18n } from "@/locales/locales";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
@@ -96,18 +97,20 @@ export default function InteractWithOtherUser(props: UserProfileWithRelationDTO)
         })
     }
 
+    const prechatUrl = `/prechat?prechatUserId=${props.id}&prechatName=${encodeURIComponent(props.name)}&prechatUserName=${encodeURIComponent(props.username)}&prechatUserPicture=${encodeURIComponent(props.profilePicture)}&prechatUserPictureBlurhash=${encodeURIComponent(props.profilePictureBlurhash || "")}`
+
     if (user1BlockedUser2) {
         return <UnblockButton handleUnblock={handleUnblock} />
     } else if (user2BlockedUser1) {
         return <BlockButton handleBlock={handleBlock} />
     } else if (user1FollowedUser2) {
-        return <UnfollowButton user2FollowingUser1={user2FollowedUser1} handleBlock={handleBlock} handleUnfollow={handleUnfollow} />
+        return <UnfollowButton user2FollowingUser1={user2FollowedUser1} handleBlock={handleBlock} handleUnfollow={handleUnfollow} prechatUrl={prechatUrl} />
     } else {
-        return <FollowButton user2FollowingUser1={user2FollowedUser1} handleFollow={handleFollow} handleBlock={handleBlock} />
+        return <FollowButton user2FollowingUser1={user2FollowedUser1} handleFollow={handleFollow} handleBlock={handleBlock} prechatUrl={prechatUrl} />
     }
 }
 
-function FollowButton({ user2FollowingUser1, handleFollow, handleBlock }: { user2FollowingUser1: boolean, handleFollow: () => void, handleBlock: () => void }) {
+function FollowButton({ user2FollowingUser1, handleFollow, handleBlock, prechatUrl }: { user2FollowingUser1: boolean, handleFollow: () => void, handleBlock: () => void, prechatUrl: string }) {
     const theme = useTheme()
     return (
         <View style={styles.container}>
@@ -126,11 +129,18 @@ function FollowButton({ user2FollowingUser1, handleFollow, handleBlock }: { user
                     {i18n.t('interactWithOtherProfiles.block')}
                 </Text>
             </Button>
+            <Link href={prechatUrl}>
+                <Button mode="contained">
+                    <Text style={styles.text}>
+                        {i18n.t('message')}
+                    </Text>
+                </Button>
+            </Link>
         </View>
     )
 }
 
-function UnfollowButton({ user2FollowingUser1, handleBlock, handleUnfollow }: { user2FollowingUser1: boolean, handleUnfollow: () => void, handleBlock: () => void }) {
+function UnfollowButton({ user2FollowingUser1, handleBlock, handleUnfollow, prechatUrl }: { user2FollowingUser1: boolean, handleUnfollow: () => void, handleBlock: () => void, prechatUrl: string }) {
     return (
         <View>
             {
@@ -150,6 +160,13 @@ function UnfollowButton({ user2FollowingUser1, handleBlock, handleUnfollow }: { 
                         {i18n.t('interactWithOtherProfiles.block')}
                     </Text>
                 </Button>
+                <Link href={prechatUrl}>
+                    <Button mode="contained">
+                        <Text style={styles.text}>
+                            {i18n.t('message')}
+                        </Text>
+                    </Button>
+                </Link>
             </View>
         </View>
     )
@@ -167,7 +184,7 @@ function UnblockButton({ handleUnblock }: { handleUnblock: () => void }) {
     )
 }
 
-function BlockButton({ handleBlock }: { handleBlock: () => void}){
+function BlockButton({ handleBlock }: { handleBlock: () => void }) {
     return (
         <View style={styles.container}>
             <Button onPress={handleBlock} mode="outlined">
