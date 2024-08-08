@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { BlockUserDTO, FollowUserDTO, MiniUserProfile, RegisterResponseDTO, RegisterUserDTO, UnblockUserDTO, UpdateUserDTO, UpdateUserProfilePictureDTO, UserProfileDTO, UserProfileWithRelationDTO } from "./models";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
@@ -135,6 +135,14 @@ export function unblock(userId: string): Promise<void> {
 
 export function getProfile(userId: string): Promise<UserProfileWithRelationDTO> {
     return api.get(`${baseUrl}/profile/${userId}`).then((res) => {
+        return res.data
+    }).catch(err => {
+        throw err?.response?.data
+    })
+}
+
+export function searchUsers(query: string, axiosRequestConfig?: AxiosRequestConfig): Promise<MiniUserProfile[]> {
+    return api.get(`${baseUrl}/search/${encodeURIComponent(query)}`, axiosRequestConfig).then((res) => {
         return res.data
     }).catch(err => {
         throw err?.response?.data
