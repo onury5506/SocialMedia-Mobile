@@ -1,4 +1,4 @@
-import { getChatRoom, getChatRooms } from "@/api/chat.api";
+import { getChatRoom, getChatRooms, newMessageForRoom } from "@/api/chat.api";
 import { ChatMessageDto, ChatRoomDto } from "@/api/models";
 import { ChatListElement } from "@/components/Chat/chatListElement";
 import socket from "@/websocket/websocket";
@@ -32,7 +32,33 @@ export default function Chats() {
     const router = useRouter()
 
     useEffect(() => {
-        socket.on('message', (message: ChatMessageDto) => {
+
+        function handleNewMessageSendTo(chatRoomId: string) {
+            if (!idListRef.current[chatRoomId]) {
+                getChatRoom(chatRoomId).then(chat => {
+                    if (chat) {
+                        setChats(prev => {
+                            return [
+                                chat,
+                                ...prev
+                            ]
+                        })
+                    }
+                })
+                return
+            }
+
+            setChats(prev => {
+                const newChats = [...prev]
+                const chatIndex = newChats.findIndex(chat => chat._id === chatRoomId)
+                const chat = newChats[chatIndex]
+                newChats.splice(chatIndex, 1)
+                newChats.unshift(chat)
+                return newChats
+            })
+        }
+
+        function handleNewMessageFromWebSocket(message: ChatMessageDto) {
 
             if (!idListRef.current[message.chatRoom]) {
                 getChatRoom(message.chatRoom).then(chat => {
@@ -80,7 +106,15 @@ export default function Chats() {
                 }
             })
 
-        })
+        }
+
+        newMessageForRoom.addListener("message", handleNewMessageSendTo)
+        socket.on('message', handleNewMessageFromWebSocket)
+
+        return () => {
+            newMessageForRoom.removeListener("message", handleNewMessageSendTo)
+            socket.off('message', handleNewMessageFromWebSocket)
+        }
     }, [])
 
     useEffect(() => {
