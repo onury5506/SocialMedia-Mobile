@@ -65,7 +65,15 @@ function PrivateChatListElement({
 
     const text = useMemo(() => {
         let lastMessageContent = lastMessage?.content
-        let text = lastMessageContent ? getTranslation(lastMessageContent) : ""
+        let text = ""
+
+        if (lastMessageContent) {
+            if(user?.id === lastMessage?.sender) {
+                text = lastMessageContent.originalText
+            }else{
+                text = getTranslation(lastMessageContent)
+            }
+        }
 
         if (getCharacterLength(text) > 60) {
             text = subString(text, 0, 57) + "..."
@@ -75,7 +83,7 @@ function PrivateChatListElement({
     }, [lastMessage])
 
     function navigateToChat() {
-        router.navigate(`/chat?chatRoomId=${id}&roomType=${roomType}&roomName=${encodeURIComponent(targetUser?.name || "")}&roomImagePath=${encodeURIComponent(targetUser?.profilePicture || "")}&roomImageBlurHash=${encodeURIComponent(targetUser?.profilePictureBlurhash || "")}&targetUserId=${targetUserId}&targetUserName=${encodeURIComponent(targetUser?.username || "")}`)
+        router.push(`/chat?chatRoomId=${id}&roomType=${roomType}&roomName=${encodeURIComponent(targetUser?.name || "")}&roomImagePath=${encodeURIComponent(targetUser?.profilePicture || "")}&roomImageBlurHash=${encodeURIComponent(targetUser?.profilePictureBlurhash || "")}&targetUserId=${targetUserId}&targetUserName=${encodeURIComponent(targetUser?.username || "")}`)
     }
 
     function handleProfilePicturePress() {
