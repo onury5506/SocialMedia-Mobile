@@ -15,6 +15,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      backBehavior='history'
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
@@ -81,7 +82,12 @@ export default function TabLayout() {
           ),
         }}
       />
-
+      <Tabs.Screen
+        name="chat"
+        options={{
+          href: null
+        }}
+      />
       <Tabs.Screen
         name="[user]"
         options={{
