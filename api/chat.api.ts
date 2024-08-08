@@ -4,6 +4,7 @@ import { api } from "./api.config";
 import { ChatMessageDto, ChatMessageDtoMessageStatusEnum, ChatMessageDtoMessageTypeEnum, ChatMessageSendDto, ChatMessageSendDtoTypeEnum, ChatRoomDto, PrivateChatRoomCreateRequestDto, TranslateResultDtoOriginalLanguageEnum } from "./models";
 import { PaginatedDto } from "./paginated.dto";
 import { queryClient } from "@/app/_layout";
+import EventEmitter from "events";
 
 const baseUrl = `${generalBaseUrl}/chat`
 
@@ -81,6 +82,8 @@ export interface SendMessageQueueItem {
 const sendMessageQueue: SendMessageQueueItem[] = []
 let userId = store.getState().user.profile?.id || ''
 
+export const newMessageForRoom = new EventEmitter();
+
 store.subscribe(() => {
     const state = store.getState()
     userId = state.user.profile?.id || ''
@@ -95,8 +98,12 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
         throw new Error('Message type is not supported')
     }
 
+    const newMessageId = "new" + Math.floor(Math.random() * 1000000)
+
+    newMessageForRoom.emit("message", message.roomId)
+
     const newMessage: ChatMessageDto = {
-        _id: "new" + Math.floor(Math.random() * 1000000),
+        _id: newMessageId,
         chatRoom: message.roomId,
         sender: userId,
         messageType: ChatMessageDtoMessageTypeEnum.Text,
@@ -137,6 +144,7 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
     sendMessageQueue.push({
         message,
         resolve: (value: ChatMessageDto) => {
+            newMessageForRoom.emit(newMessageId, true, null)
             queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
                 if (!oldData) {
                     return;
@@ -167,7 +175,7 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
         },
         reject: (err) => {
             setTimeout(() => {
-
+                newMessageForRoom.emit(newMessageId, false, err)
                 queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
                     if (!oldData) {
                         return;
@@ -179,13 +187,6 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
                     if (newMessageIndex >= 0) {
                         let errorMessage = { ...newMessage }
                         errorMessage.messageStatus = ChatMessageDtoMessageStatusEnum.Error
-                        errorMessage.content = {
-                            originalLanguage: TranslateResultDtoOriginalLanguageEnum.En,
-                            originalText: JSON.stringify(err) || "",
-                            translations: {
-                                [TranslateResultDtoOriginalLanguageEnum.En]: JSON.stringify(err) || ""
-                            }
-                        }
                         firstPage.data.splice(newMessageIndex, 1, errorMessage)
                     }
 
@@ -202,6 +203,8 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
     if (sendMessageQueue.length === 1) {
         sendMessageQueueProcess()
     }
+
+    return newMessageId
 }
 
 export async function sendMessageQueueProcess() {
