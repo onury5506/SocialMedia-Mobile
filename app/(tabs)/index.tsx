@@ -5,8 +5,9 @@ import socket from "@/websocket/websocket";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
-import { Dialog, Portal, Surface } from "react-native-paper";
+import { Dialog, Portal, Searchbar, Surface } from "react-native-paper";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 
 export default function Chats() {
     const idListRef = useRef<any>({})
@@ -22,11 +23,13 @@ export default function Chats() {
         initialPageParam: 1,
         getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined
     })
+    const [searchText, setSearchText] = useState("")
     const queryClient = useQueryClient()
     const [showImage, setShowImage] = useState<{
         url: string,
         bluredHash: string
     } | null>(null)
+    const router = useRouter()
 
     useEffect(() => {
         socket.on('message', (message: ChatMessageDto) => {
@@ -98,8 +101,28 @@ export default function Chats() {
         setChats(newChats)
     }, [data])
 
+    useEffect(() => {
+        if(searchText.length === 0) {
+            return
+        }
+
+        const timer = setTimeout(() => {
+            router.push(`/search?searchStartText=${encodeURIComponent(searchText)}`)
+            setSearchText("")
+        }, 500)
+
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [searchText])
+
     return (
         <Surface style={styles.container} >
+            <Searchbar
+                placeholder="Search"
+                onChangeText={setSearchText}
+                value={searchText}
+            />
             <FlatList
                 data={chats}
                 keyExtractor={item => item._id}
