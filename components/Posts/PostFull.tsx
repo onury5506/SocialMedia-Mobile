@@ -12,6 +12,7 @@ import { readableNumber } from "@/helpers/readableNumber";
 import { likePost, unlikePost } from "@/api/post.api";
 import { getTranslation } from "@/locales/getTranslation";
 import VisitUser from "../VisitUser";
+import { getCharacterLength } from "@/helpers/string";
 
 let timer: any = null;
 const TIMEOUT = 500
@@ -212,10 +213,12 @@ export default function PostFull(post: PostFullProps) {
         likes -= 1
     }
 
-    const text = getTranslation(post.content)
-
-    const showShowMoreButton = !showMore && text.length > 30
-    const textProcessed = showMore ? text : text.slice(0, 30)
+    let text = getTranslation(post.content)
+    let showShowMoreButton = false
+    if (!showMore && getCharacterLength(text) > 50) {
+        showShowMoreButton = true
+        text = text.slice(0, 47) + "..."
+    }
 
     return (
         <View style={styles.postContainer}>
@@ -272,7 +275,7 @@ export default function PostFull(post: PostFullProps) {
                         <Text style={styles.writerUsernameBeforeText}>
                             {writer.username + ' '}
                         </Text>
-                        {textProcessed}
+                        {text}
                         {
                             showShowMoreButton &&
                             <Text onPress={() => setShowMore(true)} style={{ color: theme.colors.primary }}>
