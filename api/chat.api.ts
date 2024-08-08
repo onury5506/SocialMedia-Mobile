@@ -1,7 +1,9 @@
+import store from "@/store/store";
 import { baseUrl as generalBaseUrl } from "./api.config";
 import { api } from "./api.config";
-import { ChatMessageDto, ChatMessageSendDto, ChatRoomDto, PrivateChatRoomCreateRequestDto } from "./models";
+import { ChatMessageDto, ChatMessageDtoMessageStatusEnum, ChatMessageDtoMessageTypeEnum, ChatMessageSendDto, ChatMessageSendDtoTypeEnum, ChatRoomDto, PrivateChatRoomCreateRequestDto, TranslateResultDtoOriginalLanguageEnum } from "./models";
 import { PaginatedDto } from "./paginated.dto";
+import { queryClient } from "@/app/_layout";
 
 const baseUrl = `${generalBaseUrl}/chat`
 
@@ -41,7 +43,6 @@ export function createPrivateRoom(userId: string): Promise<ChatRoomDto> {
 }
 
 export function getLastMessage(roomId: string): Promise<ChatMessageDto | null> {
-    console.log('getLastMessage', roomId, `${baseUrl}/message/last/${roomId}`)
     return api.get<ChatMessageDto | null>(`${baseUrl}/message/last/${roomId}`).then(res => {
         return res.data
     }).catch(err => {
@@ -62,11 +63,169 @@ export function getMessages(roomId: string, pageDate: number, pageSize: number):
 }
 
 export function sendMessage(message: ChatMessageSendDto): Promise<ChatMessageDto> {
-    return api.post<ChatMessageDto>(`${baseUrl}/message`, {
+    return api.post<ChatMessageDto>(`${baseUrl}/message`,
         message
-    }).then(res => {
+    ).then(res => {
         return res.data
     }).catch(err => {
         throw err?.response?.data
     })
+}
+
+export interface SendMessageQueueItem {
+    message: ChatMessageSendDto,
+    resolve: (value: ChatMessageDto) => void,
+    reject: (err: any) => void
+}
+
+const sendMessageQueue: SendMessageQueueItem[] = []
+let userId = store.getState().user.profile?.id || ''
+
+store.subscribe(() => {
+    const state = store.getState()
+    userId = state.user.profile?.id || ''
+    console.log('state', userId)
+})
+
+export function sendMessageQueueAdd(message: ChatMessageSendDto) {
+    if (!userId) {
+        throw new Error('User not found')
+    } else if (!message.content) {
+        throw new Error('Message content is empty')
+    } else if (message.type !== ChatMessageSendDtoTypeEnum.Text) {
+        throw new Error('Message type is not supported')
+    }
+
+    console.log("-----message------\n", message)
+
+    const newMessage: ChatMessageDto = {
+        _id: "new" + Math.floor(Math.random() * 1000000),
+        chatRoom: message.roomId,
+        sender: userId,
+        messageType: ChatMessageDtoMessageTypeEnum.Text,
+        messageStatus: ChatMessageDtoMessageStatusEnum.Pending,
+        publishedAt: new Date(),
+        content: {
+            originalLanguage: TranslateResultDtoOriginalLanguageEnum.En,
+            originalText: message.content || "",
+            translations: {
+                [TranslateResultDtoOriginalLanguageEnum.En]: message.content || ""
+            }
+        }
+    }
+
+    console.log("-----newMessage------\n", newMessage)
+
+    console.log(`chat:message:last:${message.roomId}`)
+
+    queryClient.setQueryData([`chat:message:last:${message.roomId}`], newMessage)
+
+    queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
+        if (!oldData) {
+            return;
+        }
+
+        const newPages = oldData.pages.map((page: any, index: number) => {
+            if (index == 0) {
+                return {
+                    ...page,
+                    data: [newMessage, ...page.data]
+                }
+            }
+            return page
+        })
+
+        return {
+            ...oldData,
+            pages: newPages
+        }
+    })
+
+    sendMessageQueue.push({
+        message,
+        resolve: (value: ChatMessageDto) => {
+            console.log("resolve", value)
+            queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
+                if (!oldData) {
+                    return;
+                }
+
+                const newPages = oldData.pages.map((page: any, index: number) => {
+                    if (index == 0) {
+
+                        const newMessageIndex = page.data.findIndex((m: ChatMessageDto) => m._id === newMessage._id)
+
+                        if (newMessageIndex >= 0) {
+                            page.data[newMessageIndex] = value
+                        }
+
+                        return {
+                            ...page,
+                            data: [...page.data]
+                        }
+                    }
+                    return page
+                })
+
+                return {
+                    ...oldData,
+                    pages: newPages
+                }
+            })
+        },
+        reject: (err) => {
+            setTimeout(() => {
+
+                queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
+                    if (!oldData) {
+                        return;
+                    }
+
+                    const firstPage = oldData.pages[0]
+
+                    const newMessageIndex = firstPage.data.findIndex((m: ChatMessageDto) => m._id === newMessage._id)
+                    if (newMessageIndex >= 0) {
+                        let errorMessage = { ...newMessage }
+                        errorMessage.messageStatus = ChatMessageDtoMessageStatusEnum.Error
+                        errorMessage.content = {
+                            originalLanguage: TranslateResultDtoOriginalLanguageEnum.En,
+                            originalText: JSON.stringify(err) || "",
+                            translations: {
+                                [TranslateResultDtoOriginalLanguageEnum.En]: JSON.stringify(err) || ""
+                            }
+                        }
+                        firstPage.data.splice(newMessageIndex, 1, errorMessage)
+                    }
+
+                    return {
+                        ...oldData,
+                        pages: oldData.pages
+                    }
+                })
+
+            }, 1000)
+        }
+    })
+
+    if (sendMessageQueue.length === 1) {
+        sendMessageQueueProcess()
+    }
+}
+
+export async function sendMessageQueueProcess() {
+    if (sendMessageQueue.length === 0) {
+        return
+    }
+
+    const item = sendMessageQueue.shift()!
+    console.log("-----item------\n", item)
+    await sendMessage(item.message).then(item.resolve).catch(item.reject)
+
+    if (sendMessageQueue.length > 0) {
+        sendMessageQueueProcess()
+    }
+}
+
+export function sendMessageQueueClear() {
+    sendMessageQueue.length = 0
 }
