@@ -1,5 +1,6 @@
 import { selectProfile } from "@/slices/userSlice";
-import { Link, router } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
+import { TouchableWithoutFeedback } from "react-native";
 import { useSelector } from "react-redux";
 
 export interface VisitUserProps {
@@ -9,6 +10,7 @@ export interface VisitUserProps {
     profilePicture?: string;
     profilePictureBlurhash?: string;
     children: React.ReactNode;
+    replaceUrl?: boolean;
 }
 
 export default function VisitUser({
@@ -17,18 +19,29 @@ export default function VisitUser({
     username,
     profilePicture,
     profilePictureBlurhash,
-    children
+    children,
+    replaceUrl
 }: VisitUserProps) {
     const user = useSelector(selectProfile)
     const url = `/[user]?id=${id}&username=${encodeURIComponent(username)}&name=${encodeURIComponent(name)}&profilePicture=${encodeURIComponent(profilePicture || '')}&profilePictureBlurhash=${encodeURIComponent(profilePictureBlurhash || '')}`
-    
+
+    function handlePress() {
+        if (replaceUrl) {
+            router.canGoBack() && router.back()
+            router.push(url)
+            return
+        }
+
+        router.push(url)
+    }
+
     if (user?.id === id) {
         return children
     }
 
     return (
-        <Link href={url} >
+        <TouchableWithoutFeedback onPress={handlePress}>
             {children}
-        </Link>
+        </TouchableWithoutFeedback>
     )
 }
