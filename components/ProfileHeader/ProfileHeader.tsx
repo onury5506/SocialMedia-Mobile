@@ -9,12 +9,13 @@ import { getTranslation } from "@/locales/getTranslation";
 import About from "./components/About";
 import TopBar from "./components/TopBar";
 import { EditProfileButton } from "./components/EditProfile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Followers from "./components/Followers";
 import { me } from "@/api/user.api";
 import Followings from "./components/Followings";
 import InteractWithOtherUser from "./components/InteractWithOtherUser/InteractWithOtherUser";
 import { Image } from "expo-image";
+import { useGlobalSearchParams } from "expo-router";
 
 export interface ProfileHeaderProps {
     profile: UserProfileDTO | UserProfileWithRelationDTO;
@@ -24,6 +25,16 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
     const [showFollowers, setShowFollowers] = useState(false)
     const [showFollowings, setShowFollowings] = useState(false)
     const ownProfile = user?.id === profile.id;
+    const globalParams = useGlobalSearchParams()
+
+    useEffect(() => {
+        if(showFollowers){
+            handelOnFollowersClose()
+        }
+        if(showFollowings){
+            handelOnFollowingsClose()
+        }
+    }, [globalParams])
 
     function handelOnFollowersClose(){
         setShowFollowers(false)
