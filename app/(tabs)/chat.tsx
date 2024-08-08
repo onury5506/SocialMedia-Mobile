@@ -77,7 +77,6 @@ export default function Chat() {
     }, [params, focused])
 
     useEffect(() => {
-        console.log(!params?.chatRoomId, !data?.pages, !focused)
         if (!params?.chatRoomId || !data?.pages || !focused) {
             return
         }
@@ -112,12 +111,7 @@ export default function Chat() {
         }
     }, [data, params, focused])
 
-    useEffect(() => {
-        console.log("isFetching", isFetching)
-    }, [isFetching])
-
     function onEndReached(a: any) {
-        console.log("onEndReached", a, hasNextPage)
         return hasNextPage && fetchNextPage()
     }
 

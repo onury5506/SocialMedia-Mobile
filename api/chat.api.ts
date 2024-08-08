@@ -84,7 +84,6 @@ let userId = store.getState().user.profile?.id || ''
 store.subscribe(() => {
     const state = store.getState()
     userId = state.user.profile?.id || ''
-    console.log('state', userId)
 })
 
 export function sendMessageQueueAdd(message: ChatMessageSendDto) {
@@ -95,8 +94,6 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
     } else if (message.type !== ChatMessageSendDtoTypeEnum.Text) {
         throw new Error('Message type is not supported')
     }
-
-    console.log("-----message------\n", message)
 
     const newMessage: ChatMessageDto = {
         _id: "new" + Math.floor(Math.random() * 1000000),
@@ -113,10 +110,6 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
             }
         }
     }
-
-    console.log("-----newMessage------\n", newMessage)
-
-    console.log(`chat:message:last:${message.roomId}`)
 
     queryClient.setQueryData([`chat:message:last:${message.roomId}`], newMessage)
 
@@ -144,7 +137,6 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
     sendMessageQueue.push({
         message,
         resolve: (value: ChatMessageDto) => {
-            console.log("resolve", value)
             queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
                 if (!oldData) {
                     return;
@@ -218,7 +210,6 @@ export async function sendMessageQueueProcess() {
     }
 
     const item = sendMessageQueue.shift()!
-    console.log("-----item------\n", item)
     await sendMessage(item.message).then(item.resolve).catch(item.reject)
 
     if (sendMessageQueue.length > 0) {
