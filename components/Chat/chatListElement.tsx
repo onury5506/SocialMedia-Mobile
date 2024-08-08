@@ -10,9 +10,14 @@ import { Surface, Text, useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { useRouter } from "expo-router";
+import { getCharacterLength, subString } from "@/helpers/string";
+import { useMemo } from "react";
 
 interface ChatListElementProps extends ChatRoomDto {
-    lastMessage?: ChatMessageDto
+    showImage: (image: {
+        url: string,
+        bluredHash: string
+    } | null) => void
 }
 
 export function ChatListElement(props: ChatListElementProps) {
@@ -30,7 +35,7 @@ function PrivateChatListElement({
     _id: id,
     roomType,
     members,
-    lastMessage: newestLastMessage
+    showImage
 }: ChatListElementProps) {
 
     const user = useSelector(selectProfile)
@@ -58,23 +63,39 @@ function PrivateChatListElement({
         }
     })
 
+    const text = useMemo(() => {
+        let lastMessageContent = lastMessage?.content
+        let text = lastMessageContent ? getTranslation(lastMessageContent) : ""
+
+        if (getCharacterLength(text) > 60) {
+            text = subString(text, 0, 57) + "..."
+        }
+
+        return text
+    }, [lastMessage])
+
     function navigateToChat() {
-        router.navigate(`/chat?chatRoomId=${id}&roomType=${roomType}&roomName=${encodeURIComponent(targetUser?.name || "")}&roomImagePath=${encodeURIComponent(targetUser?.profilePicture || "")}&roomImageBlurHash=${encodeURIComponent(targetUser?.profilePictureBlurhash || "")}`)
+        router.navigate(`/chat?chatRoomId=${id}&roomType=${roomType}&roomName=${encodeURIComponent(targetUser?.name || "")}&roomImagePath=${encodeURIComponent(targetUser?.profilePicture || "")}&roomImageBlurHash=${encodeURIComponent(targetUser?.profilePictureBlurhash || "")}&targetUserId=${targetUserId}&targetUserName=${encodeURIComponent(targetUser?.username || "")}`)
+    }
+
+    function handleProfilePicturePress() {
+        if (!targetUser || !targetUser.profilePicture || !targetUser.profilePictureBlurhash) {
+            return;
+        }
+
+        showImage({
+            url: targetUser.profilePicture,
+            bluredHash: targetUser.profilePictureBlurhash
+        })
     }
 
     if (isTargetUserFetching || isLastMessageFetching) {
         return <ChatListElementLoading />
     }
 
-    let lastMessageContent = newestLastMessage?.content || lastMessage?.content
-    let text = lastMessageContent ? getTranslation(lastMessageContent) : ""
-
-    if (text.length > 30) {
-        text = text.slice(0, 27) + "..."
-    }
 
     const now = new Date()
-    const lastMessagePublishDate = new Date(newestLastMessage?.publishedAt || lastMessage?.publishedAt || 0)
+    const lastMessagePublishDate = new Date(lastMessage?.publishedAt || 0)
     let dateText = moment(lastMessagePublishDate).format('LT')
     if (now.getDate() !== lastMessagePublishDate.getDate()) {
         dateText = moment(lastMessagePublishDate).format('L')
@@ -83,14 +104,16 @@ function PrivateChatListElement({
     return (
         <TouchableOpacity onPress={navigateToChat}>
             <Surface style={styles.container}>
-                <Image
-                    style={styles.profilePicture}
-                    source={targetUser?.profilePicture ? { uri: targetUser.profilePicture } : require("@/assets/images/noProfilePicture.png")}
-                    placeholder={{ blurhash: targetUser?.profilePictureBlurhash }}
-                />
+                <TouchableOpacity onPress={handleProfilePicturePress}>
+                    <Image
+                        style={styles.profilePicture}
+                        source={targetUser?.profilePicture ? { uri: targetUser.profilePicture } : require("@/assets/images/noProfilePicture.png")}
+                        placeholder={{ blurhash: targetUser?.profilePictureBlurhash }}
+                    />
+                </TouchableOpacity>
                 <View style={styles.textContainer}>
                     <Text style={styles.name} >{targetUser?.name}</Text>
-                    <Text>{lastMessageContent ? getTranslation(lastMessageContent) : ""}</Text>
+                    <Text>{text ?? ""}</Text>
                     <Text style={{ ...styles.date, color: theme.colors.primary }}>{dateText}</Text>
                 </View>
             </Surface>
