@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { MD2DarkTheme, MD2LightTheme, PaperProvider, Portal } from 'react-native-paper';
+import { MD2DarkTheme, MD2LightTheme, PaperProvider, Portal, useTheme } from 'react-native-paper';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { Provider } from 'react-redux';
@@ -14,17 +14,29 @@ import { Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback } fr
 
 const darkTheme = {
   ...MD2DarkTheme,
+  myOwnProperty: true,
   colors: {
     ...MD2DarkTheme.colors,
+    chatFromUser: "#3E432E",
+    chatFromOthers: "#616F39",
+    chatText: "#ffffff",
   },
 };
 
 const lightTheme = {
   ...MD2LightTheme,
+  myOwnProperty: true,
   colors: {
     ...MD2LightTheme.colors,
+    chatFromUser: "#AFC8AD",
+    chatFromOthers: "#88AB8E",
+    chatFromText: "#000000",
   },
 };
+
+export type AppTheme = typeof darkTheme;
+
+export const useAppTheme = () => useTheme<AppTheme>();
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
