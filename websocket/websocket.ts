@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import store from "@/store/store";
 import { refresh } from "@/api/auth.api";
 
-const websocketPath = "http://192.168.1.109:3000/socket";
+const websocketPath = "https://socialmedia.onuryildiz.dev/socket";
 
 let state = store.getState();
 
