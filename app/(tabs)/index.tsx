@@ -37,6 +37,7 @@ export default function Chats() {
             if (!idListRef.current[chatRoomId]) {
                 getChatRoom(chatRoomId).then(chat => {
                     if (chat) {
+                        idListRef.current[chatRoomId] = true
                         setChats(prev => {
                             return [
                                 chat,
@@ -63,6 +64,7 @@ export default function Chats() {
             if (!idListRef.current[message.chatRoom]) {
                 getChatRoom(message.chatRoom).then(chat => {
                     if (chat) {
+                        idListRef.current[message.chatRoom] = true
                         setChats(prev => {
                             return [
                                 chat,
