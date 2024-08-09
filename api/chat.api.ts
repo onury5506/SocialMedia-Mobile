@@ -89,6 +89,8 @@ store.subscribe(() => {
     userId = state.user.profile?.id || ''
 })
 
+let c = 0
+
 export function sendMessageQueueAdd(message: ChatMessageSendDto) {
     if (!userId) {
         throw new Error('User not found')
@@ -98,7 +100,7 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
         throw new Error('Message type is not supported')
     }
 
-    const newMessageId = "new" + Math.floor(Math.random() * 1000000)
+    const newMessageId = "new" + (c++)
 
     newMessageForRoom.emit("message", message.roomId)
 
@@ -151,17 +153,21 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
                 }
 
                 const newPages = oldData.pages.map((page: any, index: number) => {
-                    if (index == 0) {
-
+                    if(index == 0){
                         const newMessageIndex = page.data.findIndex((m: ChatMessageDto) => m._id === newMessage._id)
 
-                        if (newMessageIndex >= 0) {
-                            page.data[newMessageIndex] = value
+                        if(newMessageIndex == -1){
+                            return page
                         }
 
                         return {
                             ...page,
-                            data: [...page.data]
+                            data: page.data.map((m: ChatMessageDto)=>{
+                                if(m._id == newMessage._id){
+                                    return value
+                                }
+                                return m
+                            })
                         }
                     }
                     return page
@@ -174,29 +180,42 @@ export function sendMessageQueueAdd(message: ChatMessageSendDto) {
             })
         },
         reject: (err) => {
-            setTimeout(() => {
-                newMessageForRoom.emit(newMessageId, false, err)
-                queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
-                    if (!oldData) {
-                        return;
+            newMessageForRoom.emit(newMessageId, false, err)
+            queryClient.setQueryData([`chatRoom:${message.roomId}`], (oldData: any) => {
+                if (!oldData) {
+                    return;
+                }
+
+                const newPages = oldData.pages.map((page: any, index: number) => {
+                    if(index == 0){
+                        const newMessageIndex = page.data.findIndex((m: ChatMessageDto) => m._id === newMessage._id)
+
+                        if(newMessageIndex == -1){
+                            return page
+                        }
+
+                        return {
+                            ...page,
+                            data: page.data.map((m: ChatMessageDto)=>{
+                                if(m._id == newMessage._id){
+                                    m.messageStatus = ChatMessageDtoMessageStatusEnum.Error
+                                    m.publishedAt = new Date()
+                                    return {...m}
+                                }
+                                return m
+                            })
+                        }
                     }
 
-                    const firstPage = oldData.pages[0]
+                    return page
 
-                    const newMessageIndex = firstPage.data.findIndex((m: ChatMessageDto) => m._id === newMessage._id)
-                    if (newMessageIndex >= 0) {
-                        let errorMessage = { ...newMessage }
-                        errorMessage.messageStatus = ChatMessageDtoMessageStatusEnum.Error
-                        firstPage.data.splice(newMessageIndex, 1, errorMessage)
-                    }
-
-                    return {
-                        ...oldData,
-                        pages: oldData.pages
-                    }
                 })
 
-            }, 1000)
+                return {
+                    ...oldData,
+                    pages: newPages
+                }
+            })
         }
     })
 
@@ -212,8 +231,9 @@ export async function sendMessageQueueProcess() {
         return
     }
 
-    const item = sendMessageQueue.shift()!
+    const item = sendMessageQueue[0]
     await sendMessage(item.message).then(item.resolve).catch(item.reject)
+    sendMessageQueue.shift()
 
     if (sendMessageQueue.length > 0) {
         sendMessageQueueProcess()
