@@ -1,9 +1,9 @@
-import { ChatMessageDto, ChatRoomDtoRoomTypeEnum } from "@/api/models";
+import { ChatMessageDto, ChatMessageDtoMessageStatusEnum, ChatRoomDtoRoomTypeEnum } from "@/api/models";
 import { useAppTheme } from "@/app/_layout";
 import { getTranslation } from "@/locales/getTranslation";
 import { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Icon, Text } from "react-native-paper";
 
 interface MessageProps extends ChatMessageDto {
     isFromCurrentUser: boolean;
@@ -19,6 +19,19 @@ export default function Message(props: MessageProps) {
     }
 }
 
+function MessageStatus({status}: {status: ChatMessageDtoMessageStatusEnum}) {
+    switch (status) {
+        case ChatMessageDtoMessageStatusEnum.Sent:
+            return null
+        case ChatMessageDtoMessageStatusEnum.Pending:
+            return <Icon source="clock" size={16} />
+        case ChatMessageDtoMessageStatusEnum.Error:
+            return <Icon source="alert-circle" color="red" size={16} />
+        default:
+            return null
+    }
+}
+
 function PrivateMessage(props: MessageProps) {
     const theme = useAppTheme()
 
@@ -28,6 +41,10 @@ function PrivateMessage(props: MessageProps) {
         }
         return getTranslation(props.content!)
     }, [props.content])
+
+    const messageStatus = useMemo(() => {
+        return <MessageStatus status={props.messageStatus} />
+    }, [props.messageStatus])
 
     return (
         <Text style={
@@ -41,6 +58,7 @@ function PrivateMessage(props: MessageProps) {
                 }
             ]
         }>
+            {messageStatus}
             {message}
         </Text>
     )
