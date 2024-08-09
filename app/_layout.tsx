@@ -11,6 +11,7 @@ import store from '@/store/store';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
+import { LogBox } from 'react-native';
 
 const darkTheme = {
   ...MD2DarkTheme,
@@ -38,6 +39,7 @@ export type AppTheme = typeof darkTheme;
 
 export const useAppTheme = () => useTheme<AppTheme>();
 
+LogBox.ignoreAllLogs(true)
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
