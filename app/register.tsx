@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react';
 import { i18n } from '@/locales/locales'
 import { TextInput, Button, Text, useTheme, Surface } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
-import { register } from '@/api/user.api';
+import { me, register } from '@/api/user.api';
 import { RegisterUserDTOLanguageEnum } from '@/api/models';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
+import { login } from '@/api/auth.api';
 
 export default function Register() {
     const { control, handleSubmit, formState: { errors } } = useForm()
@@ -24,8 +25,15 @@ export default function Register() {
             password: data.password,
             username: data.username,
             language: RegisterUserDTOLanguageEnum.En
-        }).then((res) => {
-            console.log(res)
+        }).then(() => {
+            return login({
+                username: data.username,
+                password: data.password
+            })
+        }).then(() => {
+            return me()
+        }).then(() => {
+            router.replace('(tabs)')
         }).catch((err) => {
             console.log(err)
             let errorMessage = typeof err?.message === "string" ? i18n.t(err?.message) : i18n.t(err?.message?.[0])
